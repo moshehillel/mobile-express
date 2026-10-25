@@ -1,0 +1,16 @@
+AIRTABLE_TOKEN=your_airtable_token_here
+AIRTABLE_REPAIRS_TABLE_ID=your_repairs_table_id_here
+STRIPE_SECRET_KEY=your_stripe_secret_key_here
+STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key_here
+GMAIL_USER=your_gmail_address@gmail.com
+GMAIL_APP_PASS=your_gmail_app_password_here
+SELLER_EMAIL=your_gmail_address@gmail.com
+SHIPPO_API_KEY=your_shippo_api_key_here
+SENDER_NAME=Mobile Express NY
+SENDER_STREET=your_warehouse_street_here
+SENDER_CITY=your_city_here
+SENDER_STATE=NY
+SENDER_ZIP=your_zip_here
+SENDER_PHONE=your_phone_here
+SENDER_EMAIL=your_email_here
+ADMIN_PASSWORD=your_admin_password_here

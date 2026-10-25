@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Express NY | Order Status</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <script src="components.js" defer></script>
+    <style>
+        :root {
+            --ink: #0b1d24;
+            --pine: #0d5c4b;
+            --copper: #f15e2c;
+            --mist: #ecf5f2;
+            --soft: #fffdf8;
+            --charcoal: #1f2b33;
+            --overlay: rgba(3, 15, 12, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Space Grotesk", "Sora", sans-serif;
+            background: linear-gradient(160deg, #fdfbf7, #f3f8f6);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .top-bar {
+            background: var(--charcoal);
+            color: white;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            text-align: center;
+        }
+
+        .wrap {
+            width: min(1100px, 92vw);
+            margin: 0 auto;
+            padding-bottom: 4rem;
+        }
+
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 1.6rem 0 1.3rem;
+            border-bottom: 1px solid rgba(11, 29, 36, 0.08);
+            flex-wrap: wrap;
+        }
+
+        .brand-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .logo img {
+            display: block;
+            height: 3.5rem;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .brand-tagline {
+            font-size: 0.95rem;
+            color: rgba(11, 29, 36, 0.7);
+        }
+
+        .site-nav .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .site-nav a {
+            text-decoration: none;
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .site-nav a:hover {
+            color: var(--pine);
+        }
+
+        .cart-btn {
+            border: none;
+            border-radius: 999px;
+            background: var(--pine);
+            color: white;
+            padding: 0.8rem 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 12px 24px rgba(13, 92, 75, 0.2);
+        }
+
+        .lookup-section {
+            background: var(--soft);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-top: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .lookup-section h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: var(--pine);
+        }
+
+        .lookup-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .lookup-mode {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.6rem;
+        }
+
+        .lookup-mode label {
+            border: 1px solid rgba(11, 29, 36, 0.15);
+            border-radius: 14px;
+            padding: 0.75rem 0.9rem;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .lookup-mode input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .lookup-mode label:has(input:checked) {
+            background: var(--mist);
+            border-color: var(--pine);
+            color: var(--pine);
+        }
+
+        .lookup-form input {
+            border: 1px solid rgba(11, 29, 36, 0.15);
+            border-radius: 14px;
+            padding: 0.85rem 1rem;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .lookup-form button {
+            background: var(--pine);
+            color: white;
+            border: none;
+            border-radius: 999px;
+            padding: 0.95rem 1.4rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .lookup-form button:hover {
+            background: #0a4a3a;
+        }
+
+        .lookup-form button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .status-result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid rgba(11, 29, 36, 0.08);
+            display: none;
+        }
+
+        .status-result.show {
+            display: block;
+        }
+
+        .status-result.error {
+            border-color: var(--copper);
+            background: #fef7f5;
+        }
+
+        .status-result h3 {
+            margin-bottom: 1rem;
+            color: var(--pine);
+        }
+
+        .status-result.error h3 {
+            color: var(--copper);
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(11, 29, 36, 0.05);
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        .status-value {
+            color: var(--ink);
+            overflow-wrap: anywhere;
+            text-align: right;
+            margin-left: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            color: var(--pine);
+            font-style: italic;
+        }
+
+        .site-footer {
+            margin-top: 3rem;
+            background: var(--charcoal);
+            color: white;
+            padding: 2.5rem 0;
+        }
+
+        .footer-content {
+            width: min(1100px, 92vw);
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.4rem;
+            justify-content: space-between;
+        }
+
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .footer-column a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-column a:hover {
+            color: var(--mint);
+        }
+
+        .footer-copy {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-credit {
+            text-align: center;
+            margin-top: 0.45rem;
+            font-size: 0.85rem;
+        }
+
+        .footer-credit a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.78);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer-credit img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .footer-credit a:hover {
+            color: var(--mint);
+        }
+
+        @media (max-width: 540px) {
+            .lookup-section {
+                padding: 1.4rem;
+            }
+
+            .lookup-mode {
+                grid-template-columns: 1fr;
+            }
+
+            .status-item {
+                display: grid;
+                gap: 0.2rem;
+            }
+
+            .status-value {
+                text-align: left;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="site-header"></div>
+
+        <main>
+            <section class="lookup-section">
+                <h2>Check Your Order Status</h2>
+                <form id="lookupForm" class="lookup-form">
+                    <div class="lookup-mode" aria-label="Lookup method">
+                        <label>
+                            <input type="radio" name="lookupType" value="orderNumber" checked>
+                            Order Number
+                        </label>
+                        <label>
+                            <input type="radio" name="lookupType" value="phone">
+                            Phone Number
+                        </label>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="lookupInput" 
+                        name="lookupValue" 
+                        placeholder="Enter your 6-digit order number" 
+                        required
+                        inputmode="numeric"
+                        autocomplete="off"
+                        pattern="[0-9]{6}"
+                        title="Enter the 6-digit order number"
+                    >
+                    <button type="submit" id="lookupBtn">Check Status</button>
+                </form>
+
+                <div id="statusResult" class="status-result">
+                    <h3 id="statusTitle"></h3>
+                    <div id="statusContent"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="site-footer"></div>
+
+    <script>
+        const lookupForm = document.getElementById('lookupForm');
+        const lookupInput = document.getElementById('lookupInput');
+        const lookupBtn = document.getElementById('lookupBtn');
+        const statusResult = document.getElementById('statusResult');
+        const statusTitle = document.getElementById('statusTitle');
+        const statusContent = document.getElementById('statusContent');
+        const lookupTypeInputs = document.querySelectorAll('input[name="lookupType"]');
+        const lookupEndpoint = '/.netlify/functions/order_status';
+
+        const escapeHtml = (value) => String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+
+        const getLookupType = () => document.querySelector('input[name="lookupType"]:checked').value;
+
+        const getPhoneDigits = (value) => value.replace(/\D/g, '');
+
+        const updateLookupInput = () => {
+            const lookupType = getLookupType();
+            lookupInput.value = '';
+            statusResult.classList.remove('show', 'error');
+
+            if (lookupType === 'phone') {
+                lookupInput.placeholder = 'Enter phone number';
+                lookupInput.inputMode = 'tel';
+                lookupInput.pattern = '[0-9()+\\-\\s.]{10,20}';
+                lookupInput.title = 'Enter the phone number used at checkout';
+                lookupInput.autocomplete = 'tel';
+                return;
+            }
+
+            lookupInput.placeholder = 'Enter your 6-digit order number';
+            lookupInput.inputMode = 'numeric';
+            lookupInput.pattern = '[0-9]{6}';
+            lookupInput.title = 'Enter the 6-digit order number';
+            lookupInput.autocomplete = 'off';
+        };
+
+        const showError = (message) => {
+            statusResult.classList.add('error', 'show');
+            statusTitle.textContent = 'Error';
+            statusContent.innerHTML = `<p>${escapeHtml(message)}</p>`;
+        };
+
+        const renderOrder = (data) => `
+            <div class="status-item">
+                <span class="status-label">Order Number:</span>
+                <span class="status-value">${escapeHtml(data.orderNumber)}</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Order Date:</span>
+                <span class="status-value">${escapeHtml(data.timestamp)}</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Phone:</span>
+                <span class="status-value">${escapeHtml(data.phone)}</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Items:</span>
+                <span class="status-value">${escapeHtml(data.details)}</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Total:</span>
+                <span class="status-value">$${escapeHtml(data.total)}</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Payment ID:</span>
+                <span class="status-value">${escapeHtml(data.payment)}</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Status:</span>
+                <span class="status-value">${escapeHtml(data.status)}</span>
+            </div>
+            ${data.address ? `
+            <div class="status-item">
+                <span class="status-label">Shipping Address:</span>
+                <span class="status-value">${escapeHtml(data.address)}</span>
+            </div>` : ''}
+            ${data.tracking ? `
+            <div class="status-item">
+                <span class="status-label">Tracking Number:</span>
+                <span class="status-value">${escapeHtml(data.tracking)}</span>
+            </div>` : ''}
+        `;
+
+        const showOrderStatus = (data, lookupType) => {
+            statusResult.classList.remove('error');
+            statusResult.classList.add('show');
+            const orders = Array.isArray(data.orders) ? data.orders : [data];
+            statusTitle.textContent = orders.length > 1 ? 'Orders Found' : 'Order Found';
+            statusContent.innerHTML = orders.map((order, index) => `
+                ${lookupType === 'phone' && orders.length > 1 ? `<h4 style="margin:${index ? '1.2rem' : '0'} 0 0.5rem;">Order ${index + 1}</h4>` : ''}
+                ${renderOrder(order)}
+            `).join('');
+        };
+
+        const lookupOrder = async (lookupType, lookupValue) => {
+            const queryKey = lookupType === 'phone' ? 'phone' : 'orderNumber';
+            const displayLabel = lookupType === 'phone' ? 'phone number' : 'order number';
+            const url = `${lookupEndpoint}?${queryKey}=${encodeURIComponent(lookupValue)}&_t=${Date.now()}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.ok && data.found) {
+                    showOrderStatus(data, lookupType);
+                } else if (data.ok && !data.found) {
+                    showError(`No order found for ${displayLabel}: ${lookupValue}`);
+                } else {
+                    showError(data.error || 'Failed to lookup order status');
+                }
+            } catch (error) {
+                console.error('Lookup error:', error);
+                showError('Network error. Please try again later.');
+            }
+        };
+
+        lookupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const lookupType = getLookupType();
+            const rawLookupValue = lookupInput.value.trim();
+            const lookupValue = lookupType === 'phone' ? getPhoneDigits(rawLookupValue) : rawLookupValue;
+
+            if (!rawLookupValue) {
+                showError(`Please enter a ${lookupType === 'phone' ? 'phone number' : '6-digit order number'}`);
+                return;
+            }
+
+            if (lookupType === 'orderNumber' && !/^\d{6}$/.test(lookupValue)) {
+                showError('Order numbers must be exactly 6 digits');
+                return;
+            }
+
+            if (lookupType === 'phone' && lookupValue.length < 10) {
+                showError('Please enter a valid phone number');
+                return;
+            }
+
+            lookupBtn.disabled = true;
+            lookupBtn.textContent = 'Looking up...';
+            statusResult.classList.remove('show', 'error');
+
+            await lookupOrder(lookupType, lookupValue);
+
+            lookupBtn.disabled = false;
+            lookupBtn.textContent = 'Check Status';
+        });
+
+        lookupTypeInputs.forEach(input => input.addEventListener('change', updateLookupInput));
+        updateLookupInput();
+        const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Express NY | Product Detail</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <script src="components.js" defer></script>
+    <style>
+        :root {
+            --ink: #0b1d24;
+            --pine: #0d5c4b;
+            --copper: #f15e2c;
+            --mist: #f0f6f4;
+            --soft: #fffdf8;
+            --charcoal: #1f2b33;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Space Grotesk", "Sora", sans-serif;
+            background: linear-gradient(160deg, #fdfbf7, #f3f8f6);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .top-bar {
+            background: var(--charcoal);
+            color: white;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            text-align: center;
+        }
+
+        .wrap {
+            width: min(1100px, 92vw);
+            margin: 0 auto;
+            padding-bottom: 3rem;
+        }
+
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 1.6rem 0 1.2rem;
+            border-bottom: 1px solid rgba(11, 29, 36, 0.08);
+            flex-wrap: wrap;
+        }
+
+        .brand-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .logo img {
+            display: block;
+            height: 3.5rem;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .brand-tagline {
+            font-size: 0.95rem;
+            color: rgba(11, 29, 36, 0.7);
+        }
+
+        .site-nav .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .site-nav a {
+            text-decoration: none;
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .site-nav a:hover {
+            color: var(--pine);
+        }
+
+        .header-cta {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .header-cta a {
+            text-decoration: none;
+            color: var(--pine);
+            font-weight: 600;
+        }
+
+        .cart-btn {
+            border: none;
+            border-radius: 999px;
+            background: var(--pine);
+            color: white;
+            padding: 0.75rem 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 12px 24px rgba(13, 92, 75, 0.2);
+        }
+
+        main {
+            background: white;
+            border-radius: 28px;
+            padding: clamp(1.5rem, 3vw, 2.5rem);
+            box-shadow: 0 30px 60px rgba(11, 29, 36, 0.08);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .gallery-main {
+            background: var(--mist);
+            border-radius: 24px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 320px;
+        }
+
+        .gallery-main img {
+            width: 100%;
+            border-radius: 18px;
+            object-fit: contain;
+            max-height: 420px;
+        }
+
+        .thumbnails {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        .thumb {
+            border: 2px solid transparent;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .thumb.active {
+            border-color: var(--pine);
+        }
+
+        .info h1 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            line-height: 1.2;
+            margin-bottom: 0.8rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(13, 92, 75, 0.12);
+            color: var(--pine);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--pine);
+            margin: 0.8rem 0 0.4rem;
+        }
+
+        .delivery {
+            color: rgba(11, 29, 36, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+        }
+
+        .actions button {
+            border: none;
+            border-radius: 999px;
+            padding: 0.85rem 1.6rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .plan-picker {
+            margin: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            font-size: 0.9rem;
+            color: rgba(11, 29, 36, 0.75);
+        }
+
+        .plan-picker select {
+            border: 1px solid rgba(11, 29, 36, 0.15);
+            border-radius: 999px;
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .add-btn {
+            background: #ffd814;
+            color: #111;
+        }
+
+        .buy-btn {
+            background: var(--copper);
+            color: white;
+        }
+
+        .description {
+            background: var(--soft);
+            border-radius: 20px;
+            padding: 1.4rem;
+            margin-top: 1.5rem;
+        }
+
+        .description h3 {
+            margin-bottom: 0.6rem;
+        }
+
+        ul.features {
+            margin-left: 1rem;
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .site-footer {
+            margin-top: 3rem;
+            background: var(--charcoal);
+            color: #fff;
+            padding: 2.5rem 0;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 1.25rem;
+            transform: translateX(-50%);
+            background: rgba(31, 43, 51, 0.96);
+            color: #fff;
+            padding: 0.85rem 1.1rem;
+            border-radius: 999px;
+            box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            max-width: min(520px, 92vw);
+            text-align: center;
+            z-index: 2000;
+        }
+
+        .toast.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-6px);
+        }
+
+        .footer-content {
+            width: min(1100px, 92vw);
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.4rem;
+            justify-content: space-between;
+        }
+
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-column a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-column a:hover {
+            color: var(--mint);
+        }
+
+        .footer-copy {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-credit {
+            text-align: center;
+            margin-top: 0.45rem;
+            font-size: 0.85rem;
+        }
+
+        .footer-credit a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.78);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer-credit img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .footer-credit a:hover {
+            color: var(--mint);
+        }
+
+        @media (max-width: 640px) {
+            .thumbnails {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="site-header"></div>
+    <div class="wrap">
+
+        <main id="productPage">
+            <p>Loading product...</p>
+        </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="site-footer"></div>
+
+    <script>
+        const VALID_TYPES = ['phone', 'case', 'accessory', 'tablet', 'plan', 'other'];
+        const TYPE_LABELS = { phone: 'Phone', case: 'Case', accessory: 'Accessory', tablet: 'Tablet', plan: 'Plan', other: 'Other' };
+
+        const normalizeProduct = (p) => {
+            const type = VALID_TYPES.includes(p.type) ? p.type : 'phone';
+            const image = p.image || '';
+            const gallery = Array.isArray(p.gallery) ? p.gallery : (image ? [image] : []);
+            const defaultPlans = ['Talk & Text', 'Talk & Media', 'Talk'];
+            const plans = type === 'phone'
+                ? (Array.isArray(p.plans) && p.plans.length ? p.plans : [...defaultPlans])
+                : [];
+
+            return {
+                id: p.id,
+                type,
+                name: p.name,
+                price: Number(p.price || 0),
+                shortDesc: p.shortDesc || '',
+                longDesc: p.longDesc || p.shortDesc || '',
+                detailDesc: p.detailDesc || '',
+                image,
+                gallery,
+                plans,
+                variants: Array.isArray(p.variants) ? p.variants : undefined,
+            };
+        };
+
+        const loadCatalog = async () => {
+            const res = await fetch('data/products.json', { cache: 'no-store' });
+            if (!res.ok) {
+                throw new Error('Unable to load data/products.json');
+            }
+            const doc = await res.json();
+            const products = Array.isArray(doc.products) ? doc.products : [];
+            return products.map(normalizeProduct);
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const rawType = params.get('type');
+        const type = VALID_TYPES.includes(rawType) ? rawType : 'phone';
+        const id = params.get('id');
+
+        const wrapGalleryImages = (product) => {
+            if (product.gallery && product.gallery.length) {
+                return product.gallery;
+            }
+            const base = (product.image || '').replace(/-\d+(?=\.[^.]+$)/, '');
+            const extensionMatch = (product.image || '').match(/\.\w+$/);
+            const extension = extensionMatch ? extensionMatch[0] : '.jpg';
+            return [1, 2, 3, 4].map(num => `${base}-${num}${extension}`);
+        };
+
+        let planOptions = null;
+        let selectedVariant = null;
+
+        const renderProduct = (product) => {
+            const features = String(product.longDesc || '').split(/\.\s+/).filter(Boolean);
+            const detailDescription = product.detailDesc || product.longDesc || product.shortDesc;
+            const gallery = wrapGalleryImages(product);
+            planOptions = product.type === 'phone' && product.plans && product.plans.length > 0 ? product.plans : null;
+            const planMarkup = planOptions ? `
+                <label class="plan-picker" for="detailPlanSelect">
+                    Select plan type
+                    <select id="detailPlanSelect">
+                        ${planOptions.map(option => `<option value="${option}">${option}</option>`).join('')}
+                    </select>
+                </label>
+            ` : '';
+
+            let priceDisplay = `<div class="price">$${Number(product.price || 0).toFixed(2)}</div>`;
+            let variantMarkup = '';
+            if (product.variants && product.variants.length > 0) {
+                const firstVariant = product.variants[0];
+                priceDisplay = `<div class="price" id="variantPrice"><strong>${firstVariant.name}: $${Number(firstVariant.price || 0).toFixed(2)}</strong></div>`;
+                variantMarkup = `
+                    <label class="plan-picker" for="variantSelect">
+                        Select condition
+                        <select id="variantSelect">
+                            ${product.variants.map((variant, index) =>
+                                `<option value="${index}" ${index === 0 ? 'selected' : ''}>${variant.name} - $${Number(variant.price || 0).toFixed(2)}</option>`
+                            ).join('')}
+                        </select>
+                    </label>
+                `;
+            }
+
+            const productPage = document.getElementById('productPage');
+            productPage.innerHTML = `
+                <div class="grid">
+                    <div>
+                        <div class="gallery-main">
+                            <img src="${gallery[0] || product.image}" alt="${product.name}" id="mainImage">
+                        </div>
+                        <div class="thumbnails">
+                            ${gallery.map((img, index) => `
+                                <div class="thumb ${index === 0 ? 'active' : ''}" data-img="${img}">
+                                    <img src="${img}" alt="${product.name} thumbnail ${index + 1}">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="info">
+                        <span class="badge">${TYPE_LABELS[product.type] || product.type}</span>
+                        <h1>${product.name}</h1>
+                        <p>${product.shortDesc}</p>
+                        ${priceDisplay}
+                        <p class="delivery">Ships within 24h in NY tri-state · Nationwide shipping 2-4 days</p>
+                        ${variantMarkup}
+                        ${planMarkup}
+                        <div class="actions">
+                            <button class="add-btn" id="addToCartBtn">Add to cart</button>
+                            <button class="buy-btn" id="buyNowBtn">Buy it now</button>
+                        </div>
+                        <div class="description">
+                            <h3>What makes it kosher ready</h3>
+                            <p>${detailDescription}</p>
+                            <h4 style="margin-top:1rem;">Key features</h4>
+                            <ul class="features">
+                                ${features.map(feature => `<li>${feature.replace(/\.$/, '')}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const thumbnails = document.querySelectorAll('.thumb');
+            const mainImage = document.getElementById('mainImage');
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', () => {
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    thumb.classList.add('active');
+                    mainImage.src = thumb.dataset.img;
+                });
+            });
+
+            const variantSelect = document.getElementById('variantSelect');
+            const variantPrice = document.getElementById('variantPrice');
+            selectedVariant = null;
+            if (variantSelect && product.variants) {
+                variantSelect.addEventListener('change', (e) => {
+                    const variantIndex = parseInt(e.target.value);
+                    selectedVariant = product.variants[variantIndex];
+                    variantPrice.innerHTML = `<strong>${selectedVariant.name}: $${Number(selectedVariant.price || 0).toFixed(2)}</strong>`;
+                });
+                selectedVariant = product.variants[0];
+            }
+
+            document.getElementById('addToCartBtn').addEventListener('click', () => {
+                const selectedPlan = planOptions ? document.getElementById('detailPlanSelect').value : null;
+                addToCart(product, selectedPlan);
+                showToast('Added to your cart. You can checkout anytime.');
+            });
+
+            document.getElementById('buyNowBtn').addEventListener('click', () => {
+                const selectedPlan = planOptions ? document.getElementById('detailPlanSelect').value : null;
+                addToCart(product, selectedPlan);
+                window.location.href = 'checkout.html';
+            });
+        };
+
+        const loadCart = () => {
+            try {
+                const saved = JSON.parse(localStorage.getItem('me_cart'));
+                return Array.isArray(saved) ? saved : [];
+            } catch (error) {
+                console.warn('Unable to load cart from storage', error);
+                return [];
+            }
+        };
+
+        const cart = loadCart();
+
+        const updateCart = () => {
+            localStorage.setItem('me_cart', JSON.stringify(cart));
+            document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+        };
+
+        const addToCart = (product, selectedPlan) => {
+            const variantName = selectedVariant ? selectedVariant.name : null;
+            const variantPrice = selectedVariant ? Number(selectedVariant.price || 0) : Number(product.price || 0);
+
+            const existing = cart.find(item =>
+                item.id === product.id &&
+                item.type === product.type &&
+                (item.plan || '') === (selectedPlan || '') &&
+                (item.variant || '') === (variantName || '')
+            );
+
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1,
+                    plan: selectedPlan || null,
+                    variant: variantName,
+                    price: variantPrice
+                });
+            }
+            updateCart();
+        };
+
+        const toastEl = document.getElementById('toast');
+        let toastTimer = null;
+        const showToast = (message) => {
+            if (!toastEl) return;
+            toastEl.textContent = message;
+            toastEl.classList.add('active');
+            if (toastTimer) window.clearTimeout(toastTimer);
+            toastTimer = window.setTimeout(() => toastEl.classList.remove('active'), 2200);
+        };
+
+        document.getElementById('cartButton').addEventListener('click', () => {
+            window.location.href = 'checkout.html';
+        });
+
+        const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
+        (async () => {
+            try {
+                const catalog = await loadCatalog();
+                const product = catalog.find(p => p.id === id) || catalog.find(p => p.type === 'phone') || catalog[0];
+                if (!product) {
+                    document.getElementById('productPage').innerHTML = '<p>Product not found.</p>';
+                    return;
+                }
+                renderProduct(product);
+                updateCart();
+            } catch (e) {
+                console.error(e);
+                document.getElementById('productPage').innerHTML = '<p>Unable to load product details right now.</p>';
+            }
+        })();
+    </script>
+</body>
+
+</html>

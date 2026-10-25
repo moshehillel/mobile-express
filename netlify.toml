@@ -1,0 +1,11 @@
+[build]
+  publish = "."
+  command = ""
+
+[functions]
+  included_files = ["data/products.json"]
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

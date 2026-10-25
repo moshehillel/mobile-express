@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Process Repairs – Mobile Express NY</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f3f4f6; min-height: 100vh; color: #1a1a1a; }
+    .container { max-width: 600px; margin: 0 auto; padding: 32px 16px; }
+
+    h1 { font-size: 1.5rem; font-weight: 700; }
+    h2 { font-size: 1rem; font-weight: 600; color: #374151; margin-bottom: 14px; }
+
+    .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 16px; }
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label { display: block; font-size: 0.8rem; font-weight: 600; color: #6b7280; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    input[type=text], input[type=password], select, textarea {
+      width: 100%; padding: 11px 13px;
+      border: 1.5px solid #e5e7eb; border-radius: 8px;
+      font-size: 1rem; background: #fff; outline: none;
+      transition: border-color 0.15s; font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus { border-color: #0d5c4b; }
+    textarea { min-height: 80px; resize: vertical; }
+
+    .btn { display: block; width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s; font-family: inherit; }
+    .btn-primary  { background: #2563eb; color: #fff; margin-top: 6px; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-save   { background: #0d5c4b; color: #fff; margin-top: 6px; }
+    .btn-save:hover { background: #0a4538; }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-label  { background: #16a34a; color: #fff; margin-top: 10px; }
+    .btn-label:hover:not(:disabled) { background: #15803d; }
+    .btn-label:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .logout { font-size: 0.85rem; color: #9ca3af; cursor: pointer; }
+    .logout:hover { color: #dc2626; }
+
+    .error   { color: #dc2626; font-size: 0.88rem; margin-top: 8px; }
+    .success { color: #16a34a; font-size: 0.88rem; margin-top: 8px; font-weight: 600; }
+
+    .info-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid #f3f4f6; font-size: 0.9rem; }
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-label { color: #6b7280; flex-shrink: 0; margin-right: 12px; font-weight: 500; }
+    .info-value { font-weight: 500; text-align: right; word-break: break-word; }
+
+    .repair-card { border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 14px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+    .repair-card:hover { border-color: #0d5c4b; background: #f0faf7; }
+    .repair-card .rc-title { font-weight: 700; margin-bottom: 3px; }
+    .repair-card .rc-meta  { font-size: 0.83rem; color: #6b7280; }
+
+    .back { color: #0d5c4b; font-size: 0.88rem; cursor: pointer; display: inline-block; margin-bottom: 16px; }
+    .back:hover { text-decoration: underline; }
+
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; }
+    .badge-new        { background: #fef3c7; color: #92400e; }
+    .badge-progress   { background: #dbeafe; color: #1e40af; }
+    .badge-repaired   { background: #ede9fe; color: #5b21b6; }
+    .badge-shipped    { background: #d1fae5; color: #065f46; }
+
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .tab { padding: 5px 14px; border-radius: 999px; border: 1.5px solid #e5e7eb; font-size: 0.82rem; font-weight: 600; cursor: pointer; background: #fff; color: #6b7280; }
+    .tab.active { background: #0d5c4b; color: #fff; border-color: #0d5c4b; }
+
+    .addr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .addr-grid .full-row { grid-column: 1 / -1; }
+    .addr-missing-note { font-size: 0.82rem; color: #92400e; background: #fef3c7; border: 1px solid #fde68a; border-radius: 6px; padding: 7px 10px; margin-bottom: 8px; }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- LOGIN -->
+  <div id="view-login">
+    <div style="text-align:center;padding:48px 0 28px;">
+      <div style="font-size:2rem;margin-bottom:8px;">🔧</div>
+      <h1>Process Repairs</h1>
+      <p style="color:#6b7280;margin-top:4px;">Mobile Express NY</p>
+    </div>
+    <div class="card">
+      <div class="field">
+        <label for="pw-input">Password</label>
+        <input type="password" id="pw-input" placeholder="Enter password" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" id="login-btn" onclick="doLogin()">Login</button>
+      <div id="login-err" class="error" hidden></div>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div id="view-list" hidden>
+    <div class="header">
+      <h1>Repairs</h1>
+      <span class="logout" onclick="doLogout()">Logout</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="setFilter('all', this)">All</button>
+      <button class="tab" onclick="setFilter('New', this)">New</button>
+      <button class="tab" onclick="setFilter('In Progress', this)">In Progress</button>
+      <button class="tab" onclick="setFilter('Repaired', this)">Repaired</button>
+      <button class="tab" onclick="setFilter('Shipped Back', this)">Shipped Back</button>
+    </div>
+
+    <div id="repair-list"><p style="color:#6b7280;font-size:0.88rem;">Loading…</p></div>
+  </div>
+
+  <!-- DETAIL -->
+  <div id="view-detail" hidden>
+    <div class="header">
+      <span class="back" onclick="showList()">← Back</span>
+      <span class="logout" onclick="doLogout()">Logout</span>
+    </div>
+
+    <!-- Info -->
+    <div class="card">
+      <h2 id="detail-title">Repair Request</h2>
+      <div id="detail-info"></div>
+    </div>
+
+    <!-- Address + Return Label -->
+    <div class="card">
+      <h2>Return Shipping Address</h2>
+      <div id="addr-missing-note" class="addr-missing-note" hidden>
+        ⚠️ Address details missing. Fill them in to enable return label.
+      </div>
+      <div class="addr-grid">
+        <div class="full-row field">
+          <label>Street</label>
+          <input type="text" id="addr-street" placeholder="123 Main St" oninput="checkAddr()">
+        </div>
+        <div class="field">
+          <label>City</label>
+          <input type="text" id="addr-city" placeholder="Monroe" oninput="checkAddr()">
+        </div>
+        <div class="field">
+          <label>State</label>
+          <input type="text" id="addr-state" placeholder="NY" oninput="checkAddr()">
+        </div>
+        <div class="full-row field">
+          <label>ZIP</label>
+          <input type="text" id="addr-zip" placeholder="10950" oninput="checkAddr()">
+        </div>
+      </div>
+      <button class="btn btn-label" id="label-btn" disabled onclick="doCreateLabel()">🖨️ Create Return Label</button>
+      <div id="label-msg" hidden></div>
+    </div>
+
+    <!-- Update -->
+    <div class="card">
+      <h2>Update Repair</h2>
+      <div class="field">
+        <label>Status</label>
+        <select id="status-sel">
+          <option value="New">New</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Repaired">Repaired</option>
+          <option value="Shipped Back">Shipped Back</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Notes</label>
+        <textarea id="notes-input" placeholder="What was found, what was fixed, cost changes…"></textarea>
+      </div>
+      <button class="btn btn-save" id="save-btn" onclick="doSave()">Save Changes</button>
+      <div id="save-msg" hidden></div>
+    </div>
+  </div>
+
+</div>
+<script>
+  let pw = '';
+  let allRepairs = [];
+  let currentRepair = null;
+  let activeFilter = 'all';
+
+  // ── LOGIN ──
+  document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+  async function doLogin() {
+    const val = document.getElementById('pw-input').value.trim();
+    if (!val) return;
+    setLoading('login-btn', true, 'Login');
+    hide('login-err');
+    try {
+      // Verify password first using update_order verify endpoint
+      const verifyResp = await fetch('/.netlify/functions/update_order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: val, verify: true }),
+      });
+      const verifyData = await verifyResp.json();
+      if (!verifyData.ok) { showErr('login-err', 'Incorrect password.'); return; }
+
+      pw = val;
+
+      // Now load repairs
+      const resp = await fetch('/.netlify/functions/get_repairs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: val }),
+      });
+      const data = await resp.json();
+      if (!data.ok) { showErr('login-err', data.error || 'Failed to load repairs.'); return; }
+      allRepairs = data.repairs;
+      show('view-list');
+      hide('view-login');
+      renderList();
+    } catch { showErr('login-err', 'Connection error. Try again.'); }
+    finally { setLoading('login-btn', false, 'Login'); }
+  }
+
+  function doLogout() {
+    pw = ''; allRepairs = []; currentRepair = null;
+    document.getElementById('pw-input').value = '';
+    hide('view-list'); hide('view-detail'); show('view-login');
+  }
+
+  // ── LIST ──
+  function setFilter(f, btn) {
+    activeFilter = f;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderList();
+  }
+
+  function renderList() {
+    const el = document.getElementById('repair-list');
+    const filtered = activeFilter === 'all'
+      ? allRepairs
+      : allRepairs.filter(r => r.status === activeFilter);
+
+    if (!filtered.length) {
+      el.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;">No repairs found.</p>';
+      return;
+    }
+    el.innerHTML = filtered.map((r, i) => `
+      <div class="repair-card" onclick="openRepair(${allRepairs.indexOf(r)})">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div class="rc-title">${r.name} — ${r.deviceMake} ${r.deviceModel}</div>
+          ${badgeHtml(r.status)}
+        </div>
+        <div class="rc-meta" style="margin-top:4px;">${r.repairs}</div>
+        <div class="rc-meta" style="margin-top:2px;">${r.phone} · $${r.estimatedTotal} · ${r.submitted}</div>
+      </div>`).join('');
+  }
+
+  function showList() { hide('view-detail'); show('view-list'); }
+
+  // ── DETAIL ──
+  function openRepair(idx) {
+    currentRepair = allRepairs[idx];
+    const r = currentRepair;
+
+    document.getElementById('detail-title').textContent = `${r.deviceMake} ${r.deviceModel} — ${r.name}`;
+
+    const rows = [
+      ['Submitted',   r.submitted],
+      ['Name',        r.name],
+      ['Phone',       r.phone],
+      ['Email',       r.email],
+      ['Address',     r.address || '—'],
+      ['Device',      `${r.deviceMake} ${r.deviceModel}`],
+      ['Repairs',     r.repairs],
+      ['Est. Total',  r.estimatedTotal ? `$${r.estimatedTotal}` : '—'],
+      r.notes    ? ['Notes',    r.notes]    : null,
+      r.tracking ? ['Tracking', r.tracking] : null,
+    ].filter(Boolean);
+
+    document.getElementById('detail-info').innerHTML = rows.map(([l, v]) =>
+      `<div class="info-row"><span class="info-label">${l}</span><span class="info-value">${v}</span></div>`
+    ).join('');
+
+    document.getElementById('status-sel').value  = r.status || 'New';
+    document.getElementById('notes-input').value = r.notes  || '';
+    hide('save-msg'); hide('label-msg');
+
+    document.getElementById('addr-street').value = r.street || '';
+    document.getElementById('addr-city').value   = r.city   || '';
+    document.getElementById('addr-state').value  = r.state  || '';
+    document.getElementById('addr-zip').value    = r.zip    || '';
+    const missing = !r.street || !r.city || !r.state || !r.zip;
+    document.getElementById('addr-missing-note').hidden = !missing;
+    checkAddr();
+
+    hide('view-list'); show('view-detail');
+  }
+
+  // ── ADDRESS ──
+  function checkAddr() {
+    const ok = !!(
+      document.getElementById('addr-street').value.trim() &&
+      document.getElementById('addr-city').value.trim()   &&
+      document.getElementById('addr-state').value.trim()  &&
+      document.getElementById('addr-zip').value.trim()
+    );
+    document.getElementById('label-btn').disabled = !ok;
+    if (ok) document.getElementById('addr-missing-note').hidden = true;
+  }
+
+  // ── CREATE RETURN LABEL ──
+  async function doCreateLabel() {
+    if (!currentRepair) return;
+    const street = document.getElementById('addr-street').value.trim();
+    const city   = document.getElementById('addr-city').value.trim();
+    const state  = document.getElementById('addr-state').value.trim();
+    const zip    = document.getElementById('addr-zip').value.trim();
+    if (!street || !city || !state || !zip) return;
+
+    const btn   = document.getElementById('label-btn');
+    const msgEl = document.getElementById('label-msg');
+    btn.disabled = true;
+    btn.textContent = 'Creating label…';
+    msgEl.hidden = true;
+
+    try {
+      const resp = await fetch('/.netlify/functions/create_repair_label', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password:  pw,
+          recordId:  currentRepair.recordId,
+          name:      currentRepair.name  || '',
+          phone:     currentRepair.phone || '',
+          street, city, state, zip,
+        }),
+      });
+      const data = await resp.json();
+
+      if (data.ok) {
+        msgEl.hidden = false;
+        msgEl.className = 'success';
+        msgEl.textContent = `✓ Return label created! Tracking: ${data.trackingNumber} (${data.carrier} ${data.service})`;
+        currentRepair.status   = 'Shipped Back';
+        currentRepair.tracking = data.trackingNumber;
+        document.getElementById('status-sel').value = 'Shipped Back';
+        window.open(data.labelUrl, '_blank');
+        // Refresh list in background
+        fetch('/.netlify/functions/get_repairs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pw }),
+        }).then(r => r.json()).then(d => { if (d.ok) allRepairs = d.repairs; });
+      } else {
+        throw new Error(data.error || 'Label creation failed');
+      }
+    } catch (e) {
+      msgEl.hidden = false;
+      msgEl.className = 'error';
+      msgEl.textContent = 'Error: ' + e.message;
+      btn.disabled = false;
+    }
+    btn.textContent = '🖨️ Create Return Label';
+  }
+
+  // ── SAVE ──
+  async function doSave() {
+    if (!currentRepair) return;
+    setLoading('save-btn', true, 'Save Changes');
+    hide('save-msg');
+    try {
+      const resp = await fetch('/.netlify/functions/update_repair', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password: pw,
+          recordId: currentRepair.recordId,
+          status:   document.getElementById('status-sel').value,
+          notes:    document.getElementById('notes-input').value.trim(),
+          street:   document.getElementById('addr-street').value.trim(),
+          city:     document.getElementById('addr-city').value.trim(),
+          state:    document.getElementById('addr-state').value.trim(),
+          zip:      document.getElementById('addr-zip').value.trim(),
+        }),
+      });
+      const data = await resp.json();
+      const msgEl = document.getElementById('save-msg');
+      msgEl.hidden = false;
+      if (data.ok) {
+        msgEl.className = 'success';
+        msgEl.textContent = '✓ Updated successfully';
+        currentRepair.status = document.getElementById('status-sel').value;
+        currentRepair.notes  = document.getElementById('notes-input').value.trim();
+        currentRepair.street = document.getElementById('addr-street').value.trim();
+        currentRepair.city   = document.getElementById('addr-city').value.trim();
+        currentRepair.state  = document.getElementById('addr-state').value.trim();
+        currentRepair.zip    = document.getElementById('addr-zip').value.trim();
+      } else {
+        msgEl.className = 'error';
+        msgEl.textContent = data.error || 'Save failed.';
+      }
+    } catch {
+      const msgEl = document.getElementById('save-msg');
+      msgEl.hidden = false; msgEl.className = 'error';
+      msgEl.textContent = 'Connection error.';
+    } finally { setLoading('save-btn', false, 'Save Changes'); }
+  }
+
+  // ── UTILS ──
+  function show(id) { document.getElementById(id).hidden = false; }
+  function hide(id) { document.getElementById(id).hidden = true; }
+  function showErr(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.hidden = false; }
+  function setLoading(id, on, label) { const b = document.getElementById(id); b.disabled = on; b.textContent = on ? 'Please wait…' : label; }
+
+  function badgeHtml(status) {
+    const map = { 'New': 'badge-new', 'In Progress': 'badge-progress', 'Repaired': 'badge-repaired', 'Shipped Back': 'badge-shipped' };
+    return `<span class="badge ${map[status] || 'badge-new'}">${status || 'New'}</span>`;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Express NY | Device Repairs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <script src="components.js" defer></script>
+  <style>
+    body { background: var(--bg); }
+
+    /* Hero */
+    .repair-hero {
+      background: linear-gradient(135deg, #0b1d24 0%, #0d5c4b 100%);
+      padding: 4.5rem 0 3.5rem;
+      text-align: center;
+      color: #fff;
+    }
+    .repair-hero .eyebrow {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 0.3rem 1rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      color: #6ee7c7;
+    }
+    .repair-hero h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+    .repair-hero p { color: rgba(255,255,255,0.7); font-size: 1rem; max-width: 480px; margin: 0 auto; }
+
+    /* Progress */
+    .progress-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .progress-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      width: min(700px, 92vw);
+      margin: 0 auto;
+    }
+    .prog-step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+    }
+    .prog-step .dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid rgba(11,29,36,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: var(--muted);
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .prog-step.active .dot  { background: var(--pine); border-color: var(--pine); color: #fff; }
+    .prog-step.done .dot    { background: var(--pine); border-color: var(--pine); color: #fff; }
+    .prog-step .step-lbl    { font-size: 0.78rem; font-weight: 600; color: var(--muted); transition: color 0.2s; }
+    .prog-step.active .step-lbl { color: var(--pine); }
+    .prog-step.done .step-lbl   { color: var(--pine); }
+    .prog-line { width: 32px; height: 2px; background: var(--border); flex-shrink: 0; transition: background 0.2s; }
+    .prog-line.done { background: var(--pine); }
+
+    /* Steps container */
+    .steps-wrap { width: min(900px, 92vw); margin: 0 auto; padding: 3rem 0 5rem; }
+
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    .step-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .step-sub { font-size: 0.9rem; color: var(--muted); margin-bottom: 2rem; }
+
+    /* Brand/Model grid */
+    .brand-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+    .brand-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 1.4rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+    }
+    .brand-card:hover { border-color: var(--pine); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .brand-card.selected { border-color: var(--pine); background: var(--pine-light); box-shadow: 0 0 0 3px rgba(13,92,75,0.12); }
+    .brand-card img { width: 64px; height: 64px; object-fit: contain; margin: 0 auto 0.6rem; display: block; }
+    .brand-card .bc-name { font-weight: 700; font-size: 0.9rem; }
+
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+    .model-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 1.2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+    }
+    .model-card:hover { border-color: var(--pine); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .model-card.selected { border-color: var(--pine); background: var(--pine-light); box-shadow: 0 0 0 3px rgba(13,92,75,0.12); }
+    .model-card img { width: 72px; height: 72px; object-fit: contain; margin: 0 auto 0.6rem; display: block; }
+    .model-card .mc-name { font-weight: 700; font-size: 0.88rem; }
+
+    /* Repair list */
+    .repair-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .repair-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.12s;
+    }
+    .repair-item:hover { border-color: var(--pine); }
+    .repair-item.selected { border-color: var(--pine); background: var(--pine-light); }
+    .repair-item .ri-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 0.7rem; transition: all 0.15s;
+    }
+    .repair-item.selected .ri-check { background: var(--pine); border-color: var(--pine); color: #fff; }
+    .repair-item .ri-name { flex: 1; font-weight: 600; font-size: 0.95rem; }
+    .repair-item .ri-price { font-weight: 700; color: var(--pine); font-size: 1rem; }
+
+    /* Contact form */
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 560px;
+      box-shadow: var(--shadow-sm);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; }
+    .form-group input, .form-group textarea {
+      border: 1px solid rgba(11,29,36,0.15); border-radius: 10px;
+      padding: 0.7rem 0.9rem; font-size: 0.95rem; font-family: inherit;
+      outline: none; transition: border-color 0.15s; background: var(--bg);
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--pine); background: #fff; }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    /* Summary box */
+    .summary-box {
+      background: var(--pine-light);
+      border: 1px solid rgba(13,92,75,0.2);
+      border-radius: 14px;
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+    .summary-box h4 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.6rem; }
+    .summary-row { display: flex; justify-content: space-between; padding: 0.25rem 0; font-weight: 500; }
+    .summary-row .sr-label { color: var(--muted); }
+    .summary-row .sr-val { font-weight: 700; }
+
+    /* Nav buttons */
+    .step-nav { display: flex; gap: 1rem; margin-top: 2rem; align-items: center; }
+    .btn-back {
+      background: none; border: 1.5px solid var(--border); border-radius: 999px;
+      padding: 0.75rem 1.6rem; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; color: var(--ink);
+      transition: border-color 0.15s;
+    }
+    .btn-back:hover { border-color: var(--pine); color: var(--pine); }
+    .btn-next {
+      background: var(--grad); color: #fff; border: none; border-radius: 999px;
+      padding: 0.85rem 2rem; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: opacity 0.2s, transform 0.12s;
+    }
+    .btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* Success */
+    .success-panel {
+      text-align: center;
+      padding: 4rem 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .success-icon {
+      width: 72px; height: 72px; background: var(--pine-light); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin: 0 auto 1.5rem;
+    }
+    .success-panel h2 { font-family: 'Sora', sans-serif; font-size: 1.8rem; color: var(--pine); margin-bottom: 0.6rem; }
+    .success-panel p { color: var(--muted); line-height: 1.7; }
+
+    .error-bar {
+      background: #fef2f0; border: 1px solid #f7c5bc; border-radius: 10px;
+      padding: 0.75rem 1rem; font-size: 0.88rem; color: #c0392b;
+      margin-bottom: 1rem; display: none;
+    }
+
+    .loading-hint { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 2rem; }
+
+    @media (max-width: 540px) {
+      .form-row { grid-template-columns: 1fr; }
+      .brand-grid { grid-template-columns: repeat(3, 1fr); }
+      .prog-step .step-lbl { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section class="repair-hero">
+  <div class="wrap">
+    <span class="eyebrow">Repair Service</span>
+    <h1>Device Repair</h1>
+    <p>Select your device, choose what needs fixing, and we'll guide you through the rest.</p>
+  </div>
+</section>
+
+<!-- Progress -->
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="prog-step active" id="prog-1"><div class="dot">1</div><span class="step-lbl">Make</span></div>
+    <div class="prog-line" id="pline-1"></div>
+    <div class="prog-step" id="prog-2"><div class="dot">2</div><span class="step-lbl">Model</span></div>
+    <div class="prog-line" id="pline-2"></div>
+    <div class="prog-step" id="prog-3"><div class="dot">3</div><span class="step-lbl">Repair</span></div>
+    <div class="prog-line" id="pline-3"></div>
+    <div class="prog-step" id="prog-4"><div class="dot">4</div><span class="step-lbl">Your Info</span></div>
+  </div>
+</div>
+
+<div class="steps-wrap">
+
+  <!-- Step 1: Make -->
+  <div class="step-panel active" id="step-1">
+    <h2 class="step-title">Select your phone brand</h2>
+    <p class="step-sub">Choose the manufacturer of the device that needs repair.</p>
+    <div id="makeGrid" class="brand-grid">
+      <div class="loading-hint">Loading…</div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-next" id="nextTo2" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Model -->
+  <div class="step-panel" id="step-2">
+    <h2 class="step-title">Select your model</h2>
+    <p class="step-sub" id="step2Sub">Choose the specific model.</p>
+    <div id="modelGrid" class="model-grid"></div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="goTo(1)">← Back</button>
+      <button class="btn-next" id="nextTo3" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Repair -->
+  <div class="step-panel" id="step-3">
+    <h2 class="step-title">What needs to be fixed?</h2>
+    <p class="step-sub" id="step3Sub">Select one or more repairs.</p>
+    <div id="repairList" class="repair-list"></div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="goTo(2)">← Back</button>
+      <button class="btn-next" id="nextTo4" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Contact info -->
+  <div class="step-panel" id="step-4">
+    <h2 class="step-title">Your information</h2>
+    <p class="step-sub">We'll use this to send you a shipping label and keep you updated.</p>
+
+    <div class="summary-box" id="orderSummary"></div>
+
+    <div class="contact-card">
+      <div class="error-bar" id="errorBar"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full name *</label>
+          <input type="text" id="cName" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label>Phone number *</label>
+          <input type="tel" id="cPhone" placeholder="(555) 000-0000" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email address *</label>
+        <input type="email" id="cEmail" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Shipping address *</label>
+        <input type="text" id="cAddr1" placeholder="Street address" required style="margin-bottom:0.5rem;">
+        <div style="display:grid;grid-template-columns:1fr 80px 100px;gap:0.5rem;">
+          <input type="text" id="cCity"  placeholder="City"  required>
+          <input type="text" id="cState" placeholder="State" required>
+          <input type="text" id="cZip"   placeholder="ZIP"   required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Additional notes</label>
+        <textarea id="cNotes" placeholder="Any other details about the issue…"></textarea>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn-back" onclick="goTo(3)">← Back</button>
+      <button class="btn-next" id="submitBtn" onclick="submitRepair()">Submit Request →</button>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div class="step-panel" id="step-success">
+    <div class="success-panel">
+      <div class="success-icon">✓</div>
+      <h2>Request received!</h2>
+      <p>We'll review your repair request and email you a prepaid shipping label within 1 business day. Ship us your device and we'll handle the rest.</p>
+      <br>
+      <a href="index.html" class="btn-next" style="display:inline-block;text-decoration:none;padding:0.85rem 2rem;">Back to Home</a>
+    </div>
+  </div>
+
+</div>
+
+<div id="site-footer"></div>
+
+<script>
+  let catalog    = { makes: [] };
+  let selMakeId  = null;
+  let selModelId = null;
+  let selRepairs = [];
+  let currentStep = 1;
+
+  async function loadCatalog() {
+    try {
+      const r = await fetch('/.netlify/functions/repairs_catalog');
+      catalog = await r.json();
+    } catch { catalog = { makes: [] }; }
+    renderMakes();
+  }
+
+  // ── Step navigation ──
+  function goTo(step) {
+    document.getElementById('step-' + currentStep).classList.remove('active');
+    document.getElementById('step-' + step).classList.add('active');
+    currentStep = step;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (step === 4) buildSummary();
+  }
+
+  function updateProgress() {
+    [1,2,3,4].forEach(i => {
+      const el = document.getElementById('prog-' + i);
+      el.classList.toggle('active', i === currentStep);
+      el.classList.toggle('done',   i < currentStep);
+      if (i < 4) {
+        document.getElementById('pline-' + i).classList.toggle('done', i < currentStep);
+      }
+    });
+  }
+
+  // ── Step 1: Makes ──
+  function renderMakes() {
+    const grid = document.getElementById('makeGrid');
+    if (!catalog.makes || !catalog.makes.length) {
+      grid.innerHTML = '<div class="loading-hint">No repair catalog available yet. Please call us at (845) 666-3989.</div>';
+      return;
+    }
+    grid.innerHTML = catalog.makes.map(m => `
+      <div class="brand-card ${selMakeId === m.id ? 'selected' : ''}" onclick="selectMake('${m.id}')">
+        <img src="${m.image || 'images/mobile-express-logo.png'}" alt="${m.name}" onerror="this.src='images/mobile-express-logo.png'">
+        <div class="bc-name">${m.name}</div>
+      </div>`).join('');
+  }
+
+  function selectMake(id) {
+    selMakeId  = id;
+    selModelId = null;
+    selRepairs = [];
+    document.getElementById('nextTo2').disabled = false;
+    renderMakes();
+  }
+
+  document.getElementById('nextTo2').addEventListener('click', () => {
+    if (!selMakeId) return;
+    const make = catalog.makes.find(m => m.id === selMakeId);
+    document.getElementById('step2Sub').textContent = 'Choose your ' + make.name + ' model.';
+    renderModels();
+    goTo(2);
+  });
+
+  // ── Step 2: Models ──
+  function renderModels() {
+    const make = catalog.makes.find(m => m.id === selMakeId);
+    const grid = document.getElementById('modelGrid');
+    if (!make || !make.models.length) {
+      grid.innerHTML = '<div class="loading-hint">No models listed for this brand yet.</div>';
+      return;
+    }
+    grid.innerHTML = make.models.map(mod => `
+      <div class="model-card ${selModelId === mod.id ? 'selected' : ''}" onclick="selectModel('${mod.id}')">
+        <img src="${mod.image || 'images/mobile-express-logo.png'}" alt="${mod.name}" onerror="this.src='images/mobile-express-logo.png'">
+        <div class="mc-name">${mod.name}</div>
+      </div>`).join('');
+  }
+
+  function selectModel(id) {
+    selModelId = id;
+    selRepairs = [];
+    document.getElementById('nextTo3').disabled = false;
+    renderModels();
+  }
+
+  document.getElementById('nextTo3').addEventListener('click', () => {
+    if (!selModelId) return;
+    const make  = catalog.makes.find(m => m.id === selMakeId);
+    const model = make && make.models.find(m => m.id === selModelId);
+    document.getElementById('step3Sub').textContent = 'Select repairs for your ' + (make ? make.name + ' ' : '') + (model ? model.name : '') + '.';
+    renderRepairs();
+    goTo(3);
+  });
+
+  // ── Step 3: Repairs ──
+  function renderRepairs() {
+    const make  = catalog.makes.find(m => m.id === selMakeId);
+    const model = make && make.models.find(m => m.id === selModelId);
+    const list  = document.getElementById('repairList');
+    if (!model || !model.repairs.length) {
+      list.innerHTML = '<div class="loading-hint">No repairs listed for this model yet. Please call us.</div>';
+      return;
+    }
+    list.innerHTML = model.repairs.map(r => `
+      <div class="repair-item ${selRepairs.includes(r.id) ? 'selected' : ''}" onclick="toggleRepair('${r.id}')">
+        <div class="ri-check">${selRepairs.includes(r.id) ? '✓' : ''}</div>
+        <div class="ri-name">${r.name}</div>
+        <div class="ri-price">$${Number(r.price).toFixed(2)}</div>
+      </div>`).join('');
+  }
+
+  function toggleRepair(id) {
+    const idx = selRepairs.indexOf(id);
+    if (idx >= 0) selRepairs.splice(idx, 1);
+    else selRepairs.push(id);
+    document.getElementById('nextTo4').disabled = selRepairs.length === 0;
+    renderRepairs();
+  }
+
+  document.getElementById('nextTo4').addEventListener('click', () => {
+    if (!selRepairs.length) return;
+    goTo(4);
+  });
+
+  // ── Step 4: Summary + submit ──
+  function buildSummary() {
+    const make  = catalog.makes.find(m => m.id === selMakeId);
+    const model = make && make.models.find(m => m.id === selModelId);
+    const repairs = model ? model.repairs.filter(r => selRepairs.includes(r.id)) : [];
+    const total = repairs.reduce((s, r) => s + Number(r.price), 0);
+    document.getElementById('orderSummary').innerHTML = `
+      <h4>Repair Summary</h4>
+      <div class="summary-row"><span class="sr-label">Device</span><span class="sr-val">${make ? make.name : ''} ${model ? model.name : ''}</span></div>
+      ${repairs.map(r => `<div class="summary-row"><span class="sr-label">${r.name}</span><span class="sr-val">$${Number(r.price).toFixed(2)}</span></div>`).join('')}
+      <div class="summary-row" style="border-top:1px solid rgba(13,92,75,0.15);margin-top:0.5rem;padding-top:0.5rem;">
+        <span class="sr-label">Estimated total</span><span class="sr-val" style="color:var(--pine);">$${total.toFixed(2)}</span>
+      </div>`;
+  }
+
+  async function submitRepair() {
+    const name   = document.getElementById('cName').value.trim();
+    const phone  = document.getElementById('cPhone').value.trim();
+    const email  = document.getElementById('cEmail').value.trim();
+    const addr1  = document.getElementById('cAddr1').value.trim();
+    const city   = document.getElementById('cCity').value.trim();
+    const state  = document.getElementById('cState').value.trim();
+    const zip    = document.getElementById('cZip').value.trim();
+    const notes  = document.getElementById('cNotes').value.trim();
+    const errorBar = document.getElementById('errorBar');
+    errorBar.style.display = 'none';
+
+    if (!name || !phone || !email || !addr1 || !city || !state || !zip) {
+      errorBar.textContent = 'Please fill in all required fields.';
+      errorBar.style.display = 'block';
+      return;
+    }
+
+    const make  = catalog.makes.find(m => m.id === selMakeId);
+    const model = make && make.models.find(m => m.id === selModelId);
+    const repairs = model ? model.repairs.filter(r => selRepairs.includes(r.id)) : [];
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    try {
+      const res = await fetch('/.netlify/functions/submit_repair', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name, phone, email,
+          address: [addr1, city, state, zip].filter(Boolean).join(', '),
+          street: addr1,
+          city,
+          state,
+          zip,
+          deviceMake:  make  ? make.name  : '',
+          deviceModel: model ? model.name : '',
+          repairs: repairs.map(r => r.name + ' ($' + Number(r.price).toFixed(2) + ')').join(', '),
+          estimatedTotal: repairs.reduce((s, r) => s + Number(r.price), 0).toFixed(2),
+          notes,
+        }),
+      });
+      const d = await res.json();
+      if (d.ok) {
+        document.getElementById('step-4').classList.remove('active');
+        document.getElementById('step-success').classList.add('active');
+        document.querySelector('.progress-bar').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        throw new Error(d.error || 'Submission failed');
+      }
+    } catch (e) {
+      errorBar.textContent = 'Something went wrong: ' + e.message;
+      errorBar.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Submit Request →';
+    }
+  }
+
+  // Scroll animations
+  const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  loadCatalog();
+</script>
+</body>
+</html>

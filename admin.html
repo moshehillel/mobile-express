@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Express NY | Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0b1d24;
+            --pine: #0d5c4b;
+            --copper: #f15e2c;
+            --cream: #fef8ef;
+            --mist: #ecf5f2;
+            --stone: #d7e0dc;
+            --charcoal: #1f2b33;
+            --overlay: rgba(3, 15, 12, 0.55);
+            --mint: #d7f2e7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Space Grotesk", "Sora", sans-serif;
+            background: linear-gradient(145deg, #fdfbf7, #f3f8f6);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font-family: inherit;
+        }
+
+        :focus-visible {
+            outline: 3px solid rgba(13, 92, 75, 0.45);
+            outline-offset: 2px;
+        }
+
+        .top-bar {
+            background: var(--charcoal);
+            color: white;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .wrap {
+            width: min(1240px, 94vw);
+            margin: 0 auto;
+            padding-bottom: 3rem;
+        }
+
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 1.6rem 0 1.2rem;
+            border-bottom: 1px solid rgba(11, 29, 36, 0.08);
+            flex-wrap: wrap;
+        }
+
+        .brand-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink);
+            text-decoration: none;
+        }
+        .logo img {
+            display: block;
+            height: 3.5rem;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        .brand-tagline {
+            font-size: 0.95rem;
+            color: rgba(11, 29, 36, 0.7);
+        }
+
+        .header-cta {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .header-cta a {
+            font-weight: 600;
+            color: var(--pine);
+            text-decoration: none;
+        }
+
+        .publish-btn {
+            background: var(--copper);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .publish-btn:hover {
+            background: #e04a20;
+            transform: translateY(-1px);
+        }
+
+        .publish-btn:active {
+            transform: translateY(0);
+        }
+
+        main {
+            padding-top: 1.8rem;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 24px;
+            padding: 1.4rem;
+            border: 1px solid rgba(12, 25, 30, 0.06);
+            box-shadow: 0 20px 55px rgba(9, 23, 22, 0.06);
+        }
+
+        .panel h2 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        form {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.92rem;
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border-radius: 14px;
+            border: 1px solid rgba(11, 29, 36, 0.15);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            background: #fff;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .option-panel {
+            border: 1px solid rgba(11, 29, 36, 0.1);
+            border-radius: 18px;
+            padding: 1rem;
+            display: grid;
+            gap: 0.8rem;
+            background: rgba(244, 240, 232, 0.45);
+        }
+
+        .check-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 700;
+        }
+
+        .check-row input {
+            width: auto;
+        }
+
+        .variant-list {
+            display: grid;
+            gap: 0.7rem;
+        }
+
+        .variant-row {
+            display: grid;
+            grid-template-columns: 1fr 160px;
+            gap: 0.7rem;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-top: 0.2rem;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 999px;
+            padding: 0.85rem 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn.primary {
+            background: var(--pine);
+            color: #fff;
+        }
+
+        .btn.ghost {
+            background: rgba(13, 92, 75, 0.12);
+            color: var(--pine);
+        }
+
+        .btn.danger {
+            background: rgba(241, 94, 44, 0.12);
+            color: var(--copper);
+        }
+
+        .small {
+            font-size: 0.9rem;
+            color: rgba(11, 29, 36, 0.7);
+        }
+
+        .list {
+            display: grid;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        .item {
+            border: 1px solid rgba(11, 29, 36, 0.1);
+            border-radius: 18px;
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 0.9rem;
+        }
+
+        .thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--mist);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item h3 {
+            font-size: 1.05rem;
+        }
+
+        .meta {
+            font-size: 0.88rem;
+            color: rgba(11, 29, 36, 0.7);
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 1.25rem;
+            transform: translateX(-50%);
+            background: rgba(31, 43, 51, 0.96);
+            color: #fff;
+            padding: 0.85rem 1.1rem;
+            border-radius: 999px;
+            box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            max-width: min(620px, 92vw);
+            text-align: center;
+            z-index: 2000;
+        }
+
+        .toast.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-6px);
+        }
+
+        @media (max-width: 980px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+
+            .variant-row {
+                grid-template-columns: 1fr;
+            }
+
+            .item {
+                grid-template-columns: 1fr;
+            }
+
+            .thumb {
+                width: 100%;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">Local admin dashboard • Upload images to /images • Save products to /data/products.json</div>
+    <div class="wrap">
+        <header class="site-header">
+            <div class="brand-block">
+                <a class="logo" href="index.html"><img src="images/mobile-express-logo.png" alt="Mobile Express NY"></a>
+                <span class="brand-tagline">Admin (local)</span>
+            </div>
+            <div class="header-cta">
+                <a href="admin-home.html">← Admin Home</a>
+                <a href="index.html">View storefront</a>
+                <a href="data/products.json" target="_blank" rel="noreferrer">View products.json</a>
+                <button id="publishBtn" class="publish-btn">🚀 Publish to Netlify</button>
+            </div>
+        </header>
+
+        <main>
+            <section class="panel" aria-label="Product editor">
+                <h2>Add / edit product</h2>
+                <p class="small">Choose a type (Phone, Case, Accessory, Tablet, or Other), fill out the fields, upload an image, then save.</p>
+
+                <form id="productForm">
+                    <input type="hidden" id="productId" name="id">
+                    <div class="row">
+                        <label>
+                            Type
+                            <select id="type" name="type" required>
+                                <option value="phone">Phone</option>
+                                <option value="case">Case</option>
+                                <option value="accessory">Accessory</option>
+                                <option value="tablet">Tablet</option>
+                                <option value="plan">Plan</option>
+                                <option value="other">Other Item</option>
+                            </select>
+                        </label>
+                        <label>
+                            Price
+                            <input id="price" name="price" type="number" min="0" step="0.01" placeholder="199.99" required>
+                        </label>
+                    </div>
+
+                    <label style="display:flex;align-items:center;gap:.5rem;flex-direction:row;font-weight:600;">
+                        <input id="serialized" name="serialized" type="checkbox" style="width:auto;">
+                        Serialized item (requires an IMEI per unit at shipping)
+                    </label>
+
+                    <label>
+                        Name
+                        <input id="name" name="name" type="text" placeholder="Product name" required>
+                    </label>
+
+                    <label>
+                        SKU
+                        <input id="sku" name="sku" type="text" placeholder="e.g. WP-001">
+                    </label>
+
+                    <label>
+                        Short description
+                        <input id="shortDesc" name="shortDesc" type="text" placeholder="One-line description" required>
+                    </label>
+
+                    <label>
+                        Long description (optional)
+                        <textarea id="longDesc" name="longDesc" placeholder="Detailed description"></textarea>
+                    </label>
+
+                    <label>
+                        Details page description (optional)
+                        <textarea id="detailDesc" name="detailDesc" placeholder="Longer text shown in the details page description area"></textarea>
+                    </label>
+
+                    <div class="option-panel">
+                        <label class="check-row">
+                            <input id="hasVariants" name="hasVariants" type="checkbox">
+                            Add variants
+                        </label>
+                        <label id="variantCountLabel" style="display:none;">
+                            How many variants?
+                            <input id="variantCount" name="variantCount" type="number" min="1" max="12" step="1" value="2">
+                        </label>
+                        <div class="variant-list" id="variantList"></div>
+                    </div>
+
+                    <label>
+                        Image upload
+                        <input id="imageFile" name="image" type="file" accept="image/*">
+                    </label>
+
+                    <label>
+                        Extra image 2 (optional)
+                        <input id="imageFile2" name="image2" type="file" accept="image/*">
+                    </label>
+
+                    <label>
+                        Extra image 3 (optional)
+                        <input id="imageFile3" name="image3" type="file" accept="image/*">
+                    </label>
+
+                    <label>
+                        Extra image 4 (optional)
+                        <input id="imageFile4" name="image4" type="file" accept="image/*">
+                    </label>
+
+                    <label>
+                        Image path (auto-filled after upload)
+                        <input id="imagePath" name="imagePath" type="text" placeholder="images/your-file.jpg" required>
+                    </label>
+
+                    <label>
+                        Gallery paths (auto-filled after upload)
+                        <textarea id="galleryPaths" name="galleryPaths" placeholder="images/a.jpg\nimages/b.jpg\nimages/c.jpg"></textarea>
+                    </label>
+
+                    <div class="actions">
+                        <button class="btn primary" type="submit">Save product</button>
+                        <button class="btn ghost" type="button" id="uploadBtn">Upload images</button>
+                        <button class="btn ghost" type="button" id="newBtn">New product</button>
+                    </div>
+                </form>
+            </section>
+
+            <aside class="panel" aria-label="Product list">
+                <h2>Products</h2>
+                <p class="small">Click an item to edit. Use delete to remove it from the catalog.</p>
+                <div class="list" id="productList"></div>
+            </aside>
+        </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+        const form = document.getElementById('productForm');
+        const productList = document.getElementById('productList');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const newBtn = document.getElementById('newBtn');
+        const hasVariantsInput = document.getElementById('hasVariants');
+        const variantCountInput = document.getElementById('variantCount');
+        const variantCountLabel = document.getElementById('variantCountLabel');
+        const variantList = document.getElementById('variantList');
+
+        const toastEl = document.getElementById('toast');
+        let toastTimer = null;
+        const showToast = (message) => {
+            if (!toastEl) return;
+            toastEl.textContent = message;
+            toastEl.classList.add('active');
+            if (toastTimer) window.clearTimeout(toastTimer);
+            toastTimer = window.setTimeout(() => toastEl.classList.remove('active'), 2400);
+        };
+
+        const state = {
+            products: [],
+            selectedId: null,
+        };
+
+        const escapeHtml = (value) => {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        };
+
+        const loadProducts = async () => {
+            const res = await fetch('/api/products', { cache: 'no-store' });
+            if (!res.ok) throw new Error('Failed to load products');
+            const doc = await res.json();
+            state.products = Array.isArray(doc.products) ? doc.products : [];
+        };
+
+        const renderVariantRows = (variants = []) => {
+            const enabled = hasVariantsInput.checked;
+            variantCountLabel.style.display = enabled ? 'grid' : 'none';
+            variantList.innerHTML = '';
+            if (!enabled) return;
+
+            const count = Math.max(1, Math.min(12, Number(variantCountInput.value) || variants.length || 1));
+            variantCountInput.value = count;
+
+            variantList.innerHTML = Array.from({ length: count }, (_, index) => {
+                const variant = variants[index] || {};
+                return `
+                    <div class="variant-row">
+                        <label>
+                            Variant ${index + 1} name
+                            <input class="variant-name" type="text" placeholder="New, Used, 8GB..." value="${escapeHtml(variant.name || '')}" ${enabled ? 'required' : ''}>
+                        </label>
+                        <label>
+                            Variant ${index + 1} price
+                            <input class="variant-price" type="number" min="0" step="0.01" placeholder="199.99" value="${variant.price ?? ''}" ${enabled ? 'required' : ''}>
+                        </label>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        const collectVariants = () => {
+            if (!hasVariantsInput.checked) return undefined;
+            const rows = [...variantList.querySelectorAll('.variant-row')];
+            const variants = rows.map(row => {
+                const name = row.querySelector('.variant-name').value.trim();
+                const price = Number(row.querySelector('.variant-price').value);
+                if (!name || !Number.isFinite(price) || price < 0) {
+                    throw new Error('Variant name and price are required');
+                }
+                return { name, price };
+            });
+
+            if (!variants.length) {
+                throw new Error('Add at least one variant');
+            }
+
+            return variants;
+        };
+
+        const resetForm = () => {
+            state.selectedId = null;
+            form.reset();
+            document.getElementById('productId').value = '';
+            document.getElementById('type').value = 'phone';
+            document.getElementById('imagePath').value = '';
+            document.getElementById('galleryPaths').value = '';
+            document.getElementById('detailDesc').value = '';
+            document.getElementById('sku').value = '';
+            document.getElementById('serialized').checked = true; // phones are the default type
+            hasVariantsInput.checked = false;
+            variantCountInput.value = 2;
+            renderVariantRows();
+        };
+
+        const fillForm = (product) => {
+            state.selectedId = product.id;
+            document.getElementById('productId').value = product.id || '';
+            const VALID_TYPES = ['phone', 'case', 'accessory', 'tablet', 'plan', 'other'];
+            document.getElementById('type').value = VALID_TYPES.includes(product.type) ? product.type : 'phone';
+            document.getElementById('price').value = product.price ?? '';
+            document.getElementById('name').value = product.name ?? '';
+            document.getElementById('sku').value = product.sku ?? '';
+            document.getElementById('shortDesc').value = product.shortDesc ?? '';
+            document.getElementById('longDesc').value = product.longDesc ?? '';
+            document.getElementById('detailDesc').value = product.detailDesc ?? '';
+            document.getElementById('serialized').checked = !!product.serialized;
+            document.getElementById('imagePath').value = product.image ?? '';
+            document.getElementById('galleryPaths').value = Array.isArray(product.gallery) ? product.gallery.join('\n') : '';
+            const variants = Array.isArray(product.variants) ? product.variants : [];
+            hasVariantsInput.checked = variants.length > 0;
+            variantCountInput.value = variants.length || 2;
+            renderVariantRows(variants);
+        };
+
+        const renderList = () => {
+            if (!state.products.length) {
+                productList.innerHTML = '<p class="small">No products yet. Add your first product on the left.</p>';
+                return;
+            }
+
+            const TYPE_ORDER = { phone: 0, tablet: 1, case: 2, accessory: 3, plan: 4, other: 5 };
+            const sorted = [...state.products].sort((a, b) => {
+                const ta = TYPE_ORDER[a.type] ?? 5;
+                const tb = TYPE_ORDER[b.type] ?? 5;
+                if (ta !== tb) return ta - tb;
+                return String(a.name || '').localeCompare(String(b.name || ''));
+            });
+
+            productList.innerHTML = sorted.map(p => {
+                const img = p.image ? `<img src="/${escapeHtml(p.image)}" alt="">` : '';
+                const selected = state.selectedId === p.id;
+                return `
+                    <article class="item" data-id="${escapeHtml(p.id)}" style="${selected ? 'border-color: rgba(13,92,75,0.6); box-shadow: 0 20px 45px rgba(13,92,75,0.10);' : ''}">
+                        <div class="thumb">${img}</div>
+                        <div>
+                            <h3>${escapeHtml(p.name || '')}</h3>
+                            <div class="meta">${escapeHtml(p.type || '')} • $${Number(p.price || 0).toFixed(2)}</div>
+                            <div class="meta" style="margin-top:0.25rem;">${escapeHtml(p.shortDesc || '')}</div>
+                            <div class="actions" style="margin-top:0.6rem;">
+                                <button class="btn ghost" type="button" data-action="edit">Edit</button>
+                                <button class="btn danger" type="button" data-action="delete">Delete</button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        };
+
+        const uploadSingle = async (file) => {
+            const body = new FormData();
+            body.append('image', file);
+            const res = await fetch('/api/upload', { method: 'POST', body });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Upload failed');
+            return data.imagePath;
+        };
+
+        const uploadImages = async () => {
+            const files = [
+                document.getElementById('imageFile')?.files?.[0] || null,
+                document.getElementById('imageFile2')?.files?.[0] || null,
+                document.getElementById('imageFile3')?.files?.[0] || null,
+                document.getElementById('imageFile4')?.files?.[0] || null,
+            ].filter(Boolean);
+
+            if (!files.length) {
+                showToast('Choose at least 1 image file first.');
+                return;
+            }
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Uploading...';
+
+            try {
+                const paths = [];
+                for (const file of files) {
+                    // eslint-disable-next-line no-await-in-loop
+                    const imagePath = await uploadSingle(file);
+                    paths.push(imagePath);
+                }
+
+                document.getElementById('imagePath').value = paths[0] || '';
+                document.getElementById('galleryPaths').value = paths.join('\n');
+                showToast('Images uploaded. Now click “Save product”.');
+            } catch (e) {
+                console.error(e);
+                showToast('Upload failed. Try a smaller image file.');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Upload images';
+            }
+        };
+
+        const saveProduct = async () => {
+            const id = document.getElementById('productId').value.trim();
+            const type = document.getElementById('type').value;
+            const name = document.getElementById('name').value.trim();
+            const sku = document.getElementById('sku').value.trim();
+            const price = Number(document.getElementById('price').value);
+            const shortDesc = document.getElementById('shortDesc').value.trim();
+            const longDesc = document.getElementById('longDesc').value.trim();
+            const detailDesc = document.getElementById('detailDesc').value.trim();
+            const serialized = document.getElementById('serialized').checked;
+            const image = document.getElementById('imagePath').value.trim();
+            const galleryRaw = document.getElementById('galleryPaths').value;
+            const gallery = String(galleryRaw || '')
+                .split(/\r?\n/)
+                .map(s => s.trim())
+                .filter(Boolean);
+            const variants = collectVariants();
+
+            const payload = {
+                id: id || undefined,
+                type,
+                name,
+                sku,
+                price,
+                shortDesc,
+                longDesc,
+                detailDesc,
+                serialized,
+                image,
+                gallery: gallery.length ? gallery : undefined,
+                variants,
+            };
+
+            const res = await fetch('/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Save failed');
+            return data.product;
+        };
+
+        const deleteProduct = async (id) => {
+            const res = await fetch(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Delete failed');
+        };
+
+        productList.addEventListener('click', async (event) => {
+            const actionBtn = event.target.closest('[data-action]');
+            const item = event.target.closest('[data-id]');
+            if (!item) return;
+
+            const id = item.dataset.id;
+            const product = state.products.find(p => p.id === id);
+            if (!product) return;
+
+            if (!actionBtn) {
+                fillForm(product);
+                renderList();
+                return;
+            }
+
+            const action = actionBtn.dataset.action;
+            if (action === 'edit') {
+                fillForm(product);
+                renderList();
+                return;
+            }
+
+            if (action === 'delete') {
+                const ok = confirm(`Delete ${product.name}?`);
+                if (!ok) return;
+
+                try {
+                    await deleteProduct(id);
+                    showToast('Deleted product.');
+                    resetForm();
+                    await loadProducts();
+                    renderList();
+                } catch (e) {
+                    console.error(e);
+                    showToast('Delete failed.');
+                }
+            }
+        });
+
+        uploadBtn.addEventListener('click', uploadImages);
+        newBtn.addEventListener('click', () => {
+            resetForm();
+            renderList();
+        });
+
+        hasVariantsInput.addEventListener('change', () => renderVariantRows());
+        variantCountInput.addEventListener('input', () => renderVariantRows());
+
+        // Publish button functionality
+        const publishBtn = document.getElementById('publishBtn');
+        publishBtn.addEventListener('click', () => {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 2rem; border-radius: 24px; max-width: 500px; width: 90%;">
+                    <h2 style="margin-bottom: 1rem; color: var(--ink);">🚀 Publish to Netlify</h2>
+                    <p style="margin-bottom: 1rem; color: var(--charcoal);">
+                        To publish your changes to Netlify, follow these steps:
+                    </p>
+                    <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--charcoal);">
+                        <li>Close this browser window</li>
+                        <li>Double-click <strong>PUBLISH.bat</strong> in your project folder</li>
+                        <li>Wait for deployment to complete</li>
+                        <li>Your changes will be live on Netlify</li>
+                    </ol>
+                    <p style="margin-bottom: 1.5rem; color: var(--charcoal); font-size: 0.9rem;">
+                        <strong>Note:</strong> Make sure you've saved all your product changes before publishing.
+                    </p>
+                    <button id="closeModal" style="width: 100%; padding: 0.8rem; background: var(--pine); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">
+                        Got it
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            document.getElementById('closeModal').addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            try {
+                const product = await saveProduct();
+                showToast('Saved product.');
+                await loadProducts();
+                fillForm(product);
+                renderList();
+            } catch (e) {
+                console.error(e);
+                showToast(e.message || 'Save failed. Make sure name/price/description/image are filled.');
+            }
+        });
+
+        (async () => {
+            try {
+                await loadProducts();
+                renderList();
+            } catch (e) {
+                console.error(e);
+                showToast('Server not running. Start it with: npm install, then npm start');
+            }
+        })();
+    </script>
+    <style>
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #fdfbf7, #f3f8f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .login-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 45px rgba(9, 23, 22, 0.1);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-box h2 {
+            margin-bottom: 1.5rem;
+            color: var(--ink);
+            text-align: center;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--stone);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: var(--pine);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-box button:hover {
+            background: #0a4a3c;
+        }
+
+        .login-box .error {
+            color: var(--copper);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-align: center;
+            min-height: 1.2rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+    <script>
+        // Simple password protection for admin panel
+        const ADMIN_PASSWORD = 'admin123'; // Change this to your desired password
+        
+        const loginOverlay = document.createElement('div');
+        loginOverlay.className = 'login-overlay';
+        loginOverlay.innerHTML = `
+            <div class="login-box">
+                <h2>Admin Login</h2>
+                <input type="password" id="adminPassword" placeholder="Enter admin password" />
+                <button onclick="checkPassword()">Login</button>
+                <div class="error" id="loginError"></div>
+            </div>
+        `;
+        
+        document.body.insertBefore(loginOverlay, document.body.firstChild);
+        document.body.classList.add('locked');
+        
+        function checkPassword() {
+            const password = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (password === ADMIN_PASSWORD) {
+                loginOverlay.classList.add('hidden');
+                document.body.classList.remove('locked');
+                // Store session in sessionStorage (clears when browser closes)
+                sessionStorage.setItem('adminAuthenticated', 'true');
+            } else {
+                errorDiv.textContent = 'Incorrect password';
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+        
+        // Check if already authenticated in this session
+        if (sessionStorage.getItem('adminAuthenticated') === 'true') {
+            loginOverlay.classList.add('hidden');
+            document.body.classList.remove('locked');
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+    </script>
+</body>
+
+</html>

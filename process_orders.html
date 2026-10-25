@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Process Orders – Mobile Express NY</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f3f4f6;
+      min-height: 100vh;
+      color: #1a1a1a;
+    }
+
+    .container { max-width: 580px; margin: 0 auto; padding: 32px 16px; }
+
+    h1 { font-size: 1.5rem; font-weight: 700; }
+    h2 { font-size: 1rem; font-weight: 600; color: #374151; margin-bottom: 14px; }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+    }
+
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label { display: block; font-size: 0.8rem; font-weight: 600; color: #6b7280; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    input[type=text], input[type=password], select {
+      width: 100%; padding: 11px 13px;
+      border: 1.5px solid #e5e7eb; border-radius: 8px;
+      font-size: 1rem; background: #fff; outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus { border-color: #2563eb; }
+
+    .btn {
+      display: block; width: 100%; padding: 12px;
+      border: none; border-radius: 8px;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn-primary { background: #2563eb; color: #fff; margin-top: 6px; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px;
+    }
+    .logout { font-size: 0.85rem; color: #9ca3af; cursor: pointer; }
+    .logout:hover { color: #dc2626; }
+
+    .error  { color: #dc2626; font-size: 0.88rem; margin-top: 8px; }
+    .success { color: #16a34a; font-size: 0.88rem; margin-top: 8px; font-weight: 600; }
+
+    .info-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 9px 0; border-bottom: 1px solid #f3f4f6; font-size: 0.9rem;
+    }
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-label { color: #6b7280; flex-shrink: 0; margin-right: 12px; }
+    .info-value { font-weight: 500; text-align: right; word-break: break-word; }
+
+    .order-card {
+      border: 1.5px solid #e5e7eb; border-radius: 10px;
+      padding: 14px; margin-bottom: 10px; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .order-card:hover { border-color: #2563eb; background: #eff6ff; }
+    .order-card .order-num { font-weight: 700; margin-bottom: 3px; }
+    .order-card .order-meta { font-size: 0.83rem; color: #6b7280; }
+
+    .back { color: #2563eb; font-size: 0.88rem; cursor: pointer; display: inline-block; margin-bottom: 16px; }
+    .back:hover { text-decoration: underline; }
+
+    .badge {
+      display: inline-block; padding: 2px 9px; border-radius: 999px;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.03em;
+    }
+    .badge-processing { background: #fef3c7; color: #92400e; }
+    .badge-shipped     { background: #dbeafe; color: #1e40af; }
+    .badge-delivered   { background: #d1fae5; color: #065f46; }
+
+    .addr-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;
+    }
+    .addr-grid .full-row { grid-column: 1 / -1; }
+    .addr-missing-note {
+      font-size: 0.82rem; color: #92400e; background: #fef3c7;
+      border: 1px solid #fde68a; border-radius: 6px;
+      padding: 7px 10px; margin-bottom: 8px;
+    }
+    .btn-label {
+      background: #16a34a; color: #fff; margin-top: 10px;
+    }
+    .btn-label:hover:not(:disabled) { background: #15803d; }
+    .btn-label:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ── LOGIN ── -->
+  <div id="view-login">
+    <div style="text-align:center; padding: 48px 0 28px;">
+      <div style="font-size:2rem; margin-bottom:8px;">📦</div>
+      <h1>Process Orders</h1>
+      <p style="color:#6b7280; margin-top:4px;">Mobile Express NY</p>
+    </div>
+    <div class="card">
+      <div class="field">
+        <label for="pw-input">Password</label>
+        <input type="password" id="pw-input" placeholder="Enter password" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" id="login-btn" onclick="doLogin()">Login</button>
+      <div id="login-err" class="error" hidden></div>
+    </div>
+  </div>
+
+  <!-- ── SEARCH ── -->
+  <div id="view-search" hidden>
+    <div class="header">
+      <h1>Process Orders</h1>
+      <span class="logout" onclick="doLogout()">Logout</span>
+    </div>
+
+    <!-- Pending orders list -->
+    <div id="pending-section">
+      <h2 style="margin-bottom:10px;">Pending Orders <span id="pending-count" style="font-size:0.82rem;color:#6b7280;font-weight:400;"></span></h2>
+      <div id="pending-items"><p style="color:#6b7280;font-size:0.88rem;">Loading…</p></div>
+    </div>
+
+    <!-- Search -->
+    <div style="margin-top:24px;">
+      <h2 style="margin-bottom:10px;">Search</h2>
+      <div class="card" style="margin-bottom:0;">
+        <div class="field">
+          <label for="search-input">Order number or phone number</label>
+          <input type="text" id="search-input" placeholder="e.g. 123456 or 7185550123">
+        </div>
+        <button class="btn btn-primary" id="search-btn" onclick="doSearch()">Search</button>
+        <div id="search-err" class="error" hidden></div>
+      </div>
+    </div>
+
+    <div id="result-list" hidden style="margin-top:16px;">
+      <h2>Search Results</h2>
+      <div id="result-items"></div>
+    </div>
+  </div>
+
+  <!-- ── ORDER DETAIL / EDIT ── -->
+  <div id="view-order" hidden>
+    <div class="header">
+      <span class="back" onclick="showSearch()">← Back</span>
+      <span class="logout" onclick="doLogout()">Logout</span>
+    </div>
+
+    <div class="card">
+      <h2 id="order-title"></h2>
+      <div id="order-info"></div>
+    </div>
+
+    <!-- Address fields + Create Label -->
+    <div class="card" id="address-card">
+      <h2>Shipping Address</h2>
+      <div id="addr-missing-note" class="addr-missing-note" hidden>
+        ⚠️ Address details are missing. Fill them in to enable label creation.
+      </div>
+      <div class="addr-grid">
+        <div class="full-row field">
+          <label for="addr-street">Street</label>
+          <input type="text" id="addr-street" placeholder="123 Main St" oninput="checkAddrComplete()">
+        </div>
+        <div class="field">
+          <label for="addr-city">City</label>
+          <input type="text" id="addr-city" placeholder="Monroe" oninput="checkAddrComplete()">
+        </div>
+        <div class="field">
+          <label for="addr-state">State</label>
+          <input type="text" id="addr-state" placeholder="NY" oninput="checkAddrComplete()">
+        </div>
+        <div class="field">
+          <label for="addr-zip">ZIP</label>
+          <input type="text" id="addr-zip" placeholder="10950" oninput="checkAddrComplete()">
+        </div>
+      </div>
+      <button class="btn btn-label" id="label-btn" disabled onclick="doCreateLabel()">🖨️ Create Shipping Label</button>
+      <div id="imei-req-note" class="addr-missing-note" hidden>⚠️ Enter at least one IMEI (or tick “accessories only”) to enable the label.</div>
+      <div id="label-msg" hidden></div>
+    </div>
+
+    <div class="card">
+      <h2>Update Order</h2>
+      <div class="field">
+        <label for="status-sel">Status</label>
+        <select id="status-sel">
+          <option value="Processing">Processing</option>
+          <option value="Shipped">Shipped</option>
+          <option value="Delivered">Delivered</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>IMEI Number(s) <span id="imei-req-count" style="font-weight:400;color:#6b7280;"></span></label>
+        <div id="imei-list"></div>
+        <button type="button" id="add-imei-btn" onclick="addImeiRow()"
+          style="margin-top:.4rem;background:rgba(13,92,75,.1);color:#0d5c4b;border:none;border-radius:999px;padding:.4rem 1rem;font-weight:700;cursor:pointer;font-size:.85rem;">+ Add IMEI</button>
+      </div>
+      <button class="btn btn-primary" id="save-btn" onclick="doSave()">Save Changes</button>
+      <div id="save-msg" hidden></div>
+    </div>
+  </div>
+
+</div>
+<script>
+  let pw = '';
+  let currentOrder = null;
+  let searchResults = [];
+
+  // ── LOGIN ──
+
+  document.getElementById('pw-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  async function doLogin() {
+    const val = document.getElementById('pw-input').value.trim();
+    if (!val) return;
+    setLoading('login-btn', true);
+    hide('login-err');
+    try {
+      const resp = await fetch('/.netlify/functions/update_order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: val, verify: true }),
+      });
+      const data = await resp.json();
+      if (!data.ok) { showErr('login-err', 'Incorrect password.'); return; }
+      pw = val;
+      show('view-search');
+      hide('view-login');
+      document.getElementById('search-input').focus();
+      loadPending();
+    } catch {
+      showErr('login-err', 'Connection error. Try again.');
+    } finally {
+      setLoading('login-btn', false);
+    }
+  }
+
+  function doLogout() {
+    pw = ''; currentOrder = null; searchResults = [];
+    document.getElementById('pw-input').value = '';
+    document.getElementById('search-input').value = '';
+    hide('view-search'); hide('view-order'); hide('result-list');
+    show('view-login');
+  }
+
+  // ── PENDING ORDERS ──
+
+  let pendingOrders = [];
+
+  async function loadPending() {
+    const el = document.getElementById('pending-items');
+    el.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;">Loading…</p>';
+    document.getElementById('pending-count').textContent = '';
+    try {
+      const resp = await fetch('/.netlify/functions/pending_orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw }),
+      });
+      const data = await resp.json();
+      if (!data.ok) { el.innerHTML = `<p class="error">Failed to load: ${data.error}</p>`; return; }
+      pendingOrders = data.orders;
+      renderPending();
+    } catch {
+      el.innerHTML = '<p class="error">Connection error loading pending orders.</p>';
+    }
+  }
+
+  function renderPending() {
+    const el = document.getElementById('pending-items');
+    const countEl = document.getElementById('pending-count');
+    if (!pendingOrders.length) {
+      el.innerHTML = '<p style="color:#16a34a;font-size:0.88rem;font-weight:600;">✓ No pending orders</p>';
+      countEl.textContent = '';
+      return;
+    }
+    countEl.textContent = `(${pendingOrders.length})`;
+    el.innerHTML = pendingOrders.map((o, i) => `
+      <div class="order-card" onclick="openOrder(pendingOrders[${i}])">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div class="order-num">Order #${o.orderNumber}</div>
+          <span class="badge badge-processing">Processing</span>
+        </div>
+        <div class="order-meta" style="margin-top:4px;">${o.details}</div>
+        <div class="order-meta" style="margin-top:2px;">$${o.total} · ${o.phone} · ${o.timestamp}</div>
+      </div>
+    `).join('');
+  }
+
+  // ── SEARCH ──
+
+  document.getElementById('search-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSearch();
+  });
+
+  async function doSearch() {
+    const q = document.getElementById('search-input').value.trim();
+    if (!q) return;
+    setLoading('search-btn', true);
+    hide('search-err'); hide('result-list');
+    const param = /^\d{6}$/.test(q) ? `orderNumber=${encodeURIComponent(q)}` : `phone=${encodeURIComponent(q)}`;
+    try {
+      const resp = await fetch(`/.netlify/functions/order_status?${param}&_t=${Date.now()}`);
+      const data = await resp.json();
+      if (!data.ok || !data.found) { showErr('search-err', 'No orders found.'); return; }
+      searchResults = data.orders;
+      if (searchResults.length === 1) { openOrder(searchResults[0]); }
+      else { renderList(); }
+    } catch {
+      showErr('search-err', 'Search failed. Try again.');
+    } finally {
+      setLoading('search-btn', false);
+    }
+  }
+
+  function renderList() {
+    const el = document.getElementById('result-items');
+    el.innerHTML = searchResults.map((o, i) => `
+      <div class="order-card" onclick="openOrder(searchResults[${i}])">
+        <div class="order-num">Order #${o.orderNumber}</div>
+        <div class="order-meta">${o.details}</div>
+        <div class="order-meta">$${o.total} · ${badgeHtml(o.status)} · ${o.timestamp}</div>
+      </div>
+    `).join('');
+    show('result-list');
+  }
+
+  function openOrder(order) {
+    currentOrder = order;
+    document.getElementById('order-title').textContent = `Order #${order.orderNumber}`;
+
+    const rows = [
+      ['Date', order.timestamp],
+      ['Source', order.source || '—'],
+      ['Phone', order.phone || '—'],
+      order.name  ? ['Name', order.name]    : null,
+      ['Items', order.details],
+      ['Subtotal', order.subtotal ? `$${order.subtotal}` : '—'],
+      ['Tax', order.tax ? `$${order.tax}` : '—'],
+      ['Total', `$${order.total}`],
+      ['Payment', order.payment || '—'],
+      order.address ? ['Address', order.address] : null,
+      order.imei    ? ['IMEI', String(order.imei).replace(/\n/g, '<br>')] : null,
+      order.tracking ? ['Tracking', order.tracking] : null,
+    ].filter(Boolean);
+
+    document.getElementById('order-info').innerHTML = rows.map(([l, v]) =>
+      `<div class="info-row"><span class="info-label">${l}</span><span class="info-value">${v}</span></div>`
+    ).join('');
+
+    document.getElementById('status-sel').value = order.status || 'Processing';
+    const reqImei = Number(order.serializedCount) || 0;
+    document.getElementById('imei-req-count').textContent =
+      reqImei > 0 ? `— ${reqImei} required (one per serialized item)` : '— not required for this order';
+    renderImeis(order.imei || '', reqImei);
+    hide('save-msg');
+
+    // Address fields
+    document.getElementById('addr-street').value = order.street || '';
+    document.getElementById('addr-city').value   = order.city   || '';
+    document.getElementById('addr-state').value  = order.state  || '';
+    document.getElementById('addr-zip').value    = order.zip    || '';
+    const addrMissing = !order.street || !order.city || !order.state || !order.zip;
+    document.getElementById('addr-missing-note').hidden = !addrMissing;
+    hide('label-msg');
+    checkAddrComplete();
+
+    hide('view-search'); show('view-order');
+  }
+
+  function showSearch() { hide('view-order'); show('view-search'); }
+
+  // ── IMEI LIST ──
+
+  function addImeiRow(value = '') {
+    const list = document.getElementById('imei-list');
+    const row = document.createElement('div');
+    row.className = 'imei-row';
+    row.style.cssText = 'display:flex;gap:.5rem;margin-bottom:.4rem;';
+    row.innerHTML =
+      '<input type="text" class="imei-input" placeholder="Enter IMEI" style="flex:1;" oninput="checkAddrComplete()">' +
+      '<button type="button" title="Remove" style="border:none;background:none;color:#dc2626;font-size:1.1rem;cursor:pointer;" ' +
+      'onclick="this.closest(\'.imei-row\').remove();checkAddrComplete()">✕</button>';
+    list.appendChild(row);
+    row.querySelector('input').value = value;
+  }
+
+  function renderImeis(imeiStr, requiredCount = 0) {
+    const list = document.getElementById('imei-list');
+    list.innerHTML = '';
+    const parts = String(imeiStr || '').split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+    parts.forEach(addImeiRow);
+    // ensure there's a row to type into for each required serialized unit
+    while (document.querySelectorAll('#imei-list .imei-input').length < Math.max(requiredCount, parts.length ? 0 : 1)) {
+      addImeiRow('');
+    }
+  }
+
+  function getImeis() {
+    return Array.from(document.querySelectorAll('#imei-list .imei-input'))
+      .map(i => i.value.trim()).filter(Boolean);
+  }
+
+  function requiredImeiCount() {
+    return (currentOrder && Number(currentOrder.serializedCount)) || 0;
+  }
+
+  // ── SAVE ──
+
+  async function doSave() {
+    if (!currentOrder) return;
+    setLoading('save-btn', true);
+    hide('save-msg');
+    const payload = {
+      password: pw,
+      orderNumber: currentOrder.orderNumber,
+      status:   document.getElementById('status-sel').value,
+      imei:     getImeis().join('\n'),
+    };
+    try {
+      const resp = await fetch('/.netlify/functions/update_order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await resp.json();
+      const msgEl = document.getElementById('save-msg');
+      msgEl.hidden = false;
+      if (data.ok) {
+        msgEl.className = 'success';
+        msgEl.textContent = '✓ Order updated successfully';
+        currentOrder.status   = payload.status;
+        currentOrder.imei     = payload.imei;
+        currentOrder.tracking = payload.tracking;
+        loadPending();
+      } else {
+        msgEl.className = 'error';
+        msgEl.textContent = data.error || 'Save failed. Try again.';
+      }
+    } catch {
+      const msgEl = document.getElementById('save-msg');
+      msgEl.hidden = false; msgEl.className = 'error';
+      msgEl.textContent = 'Connection error. Try again.';
+    } finally {
+      setLoading('save-btn', false);
+    }
+  }
+
+  // ── UTILS ──
+
+  function show(id) { document.getElementById(id).hidden = false; }
+  function hide(id) { document.getElementById(id).hidden = true; }
+  function showErr(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.hidden = false; }
+
+  function setLoading(id, on) {
+    const btn = document.getElementById(id);
+    btn.disabled = on;
+    btn.textContent = on ? 'Please wait…' : (id === 'login-btn' ? 'Login' : id === 'search-btn' ? 'Search' : 'Save Changes');
+  }
+
+  function checkAddrComplete() {
+    const street = document.getElementById('addr-street').value.trim();
+    const city   = document.getElementById('addr-city').value.trim();
+    const state  = document.getElementById('addr-state').value.trim();
+    const zip    = document.getElementById('addr-zip').value.trim();
+    const addrComplete = !!(street && city && state && zip);
+    if (addrComplete) document.getElementById('addr-missing-note').hidden = true;
+
+    const required = requiredImeiCount();
+    const have = getImeis().length;
+    const imeiOk = have >= required;
+    const note = document.getElementById('imei-req-note');
+    note.hidden = imeiOk;
+    if (!imeiOk) note.textContent = `⚠️ Enter ${required} IMEI${required === 1 ? '' : 's'} (one per serialized item) to enable the label. ${have}/${required} entered.`;
+
+    document.getElementById('label-btn').disabled = !(addrComplete && imeiOk);
+  }
+
+  async function doCreateLabel() {
+    if (!currentOrder) return;
+    const street = document.getElementById('addr-street').value.trim();
+    const city   = document.getElementById('addr-city').value.trim();
+    const state  = document.getElementById('addr-state').value.trim();
+    const zip    = document.getElementById('addr-zip').value.trim();
+    if (!street || !city || !state || !zip) return;
+
+    const imeis = getImeis();
+    if (imeis.length < requiredImeiCount()) { checkAddrComplete(); return; }
+    const imei  = imeis.join('\n');
+
+    const btn   = document.getElementById('label-btn');
+    const msgEl = document.getElementById('label-msg');
+    btn.disabled = true;
+    btn.textContent = 'Creating label…';
+    msgEl.hidden = true;
+
+    try {
+      const resp = await fetch('/.netlify/functions/create_label', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password:    pw,
+          orderNumber: currentOrder.orderNumber,
+          name:        currentOrder.name  || '',
+          phone:       currentOrder.phone || '',
+          street, city, state, zip, imei,
+        }),
+      });
+      const data = await resp.json();
+
+      if (data.ok) {
+        msgEl.hidden = false;
+        msgEl.className = 'success';
+        msgEl.textContent = `✓ Label created! Tracking: ${data.trackingNumber} (${data.carrier} ${data.service})`;
+        currentOrder.status   = 'Shipped';
+        currentOrder.tracking = data.trackingNumber;
+        currentOrder.imei     = imei;
+        document.getElementById('status-sel').value = 'Shipped';
+        // Open label PDF in new tab for printing
+        window.open(data.labelUrl, '_blank');
+        loadPending();
+      } else {
+        throw new Error(data.error || 'Label creation failed');
+      }
+    } catch (e) {
+      msgEl.hidden = false;
+      msgEl.className = 'error';
+      msgEl.textContent = 'Error: ' + e.message;
+      btn.disabled = false;
+    }
+    btn.textContent = '🖨️ Create Shipping Label';
+  }
+
+  function badgeHtml(status) {
+    const cls = status === 'Shipped' ? 'badge-shipped' : status === 'Delivered' ? 'badge-delivered' : 'badge-processing';
+    return `<span class="badge ${cls}">${status || 'Processing'}</span>`;
+  }
+</script>
+</body>
+</html>

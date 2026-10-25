@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IVR Editor – Mobile Express NY</title>
+  <style>
+    :root {
+      --ink: #0b1d24; --pine: #0d5c4b; --copper: #f15e2c;
+      --cream: #fef8ef; --mist: #ecf5f2; --stone: #d7e0dc;
+      --charcoal: #1f2b33;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: linear-gradient(145deg,#fdfbf7,#f3f8f6); color: var(--ink); min-height: 100vh; }
+
+    .top-bar { background: var(--charcoal); color: #fff; font-size: 0.88rem; padding: 0.55rem 1rem; text-align: center; }
+    .wrap { width: min(1100px, 95vw); margin: 0 auto; padding-bottom: 4rem; }
+
+    .site-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.4rem 0 1rem; border-bottom: 1px solid rgba(11,29,36,0.08); flex-wrap: wrap; }
+    .logo img { height: 3rem; width: auto; display: block; }
+    .header-links { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+    .header-links a { color: var(--pine); font-weight: 600; text-decoration: none; font-size: 0.9rem; }
+
+    .save-status { font-size: 0.85rem; color: rgba(11,29,36,0.45); margin: 1.2rem 0 1.6rem; min-height: 1.2em; }
+    .save-status.saving { color: var(--copper); }
+    .save-status.saved  { color: var(--pine); font-weight: 600; }
+
+    .panel { background: #fff; border-radius: 20px; padding: 1.5rem; border: 1px solid rgba(12,25,30,0.06); box-shadow: 0 16px 45px rgba(9,23,22,0.06); margin-bottom: 1.5rem; }
+    .panel-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .panel-sub   { font-size: 0.88rem; color: rgba(11,29,36,0.6); margin-bottom: 1.2rem; }
+
+    label { display: block; font-weight: 600; font-size: 0.88rem; margin-bottom: 0.35rem; color: rgba(11,29,36,0.75); text-transform: uppercase; letter-spacing: 0.04em; }
+    textarea, input[type=text], input[type=number] {
+      width: 100%; border: 1.5px solid var(--stone); border-radius: 12px;
+      padding: 0.75rem 1rem; font-size: 0.97rem; font-family: inherit;
+      background: #fff; outline: none; transition: border-color 0.15s;
+    }
+    textarea:focus, input:focus { border-color: var(--pine); }
+    textarea { min-height: 100px; resize: vertical; }
+
+    /* Catalog table */
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th { text-align: left; padding: 0.5rem 0.7rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(11,29,36,0.5); border-bottom: 2px solid var(--stone); }
+    td { padding: 0.45rem 0.5rem; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+    td input { border-radius: 8px; padding: 0.45rem 0.6rem; font-size: 0.9rem; }
+    td input[type=number] { width: 90px; }
+    td input[type=text]   { min-width: 140px; }
+
+    .row-del { background: none; border: none; cursor: pointer; color: #dc2626; font-size: 1.1rem; padding: 0 0.3rem; }
+    .add-row-btn { margin-top: 0.8rem; background: rgba(13,92,75,0.1); color: var(--pine); border: none; border-radius: 999px; padding: 0.5rem 1.1rem; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
+    .add-row-btn:hover { background: rgba(13,92,75,0.18); }
+
+    .sim-row { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
+    .sim-row label { margin: 0; white-space: nowrap; }
+    .sim-row input { width: 110px; }
+
+    /* Mode badge */
+    .mode-badge { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 4px; }
+    .mode-single { background: #fef3c7; color: #92400e; }
+    .mode-dual   { background: #dbeafe; color: #1e40af; }
+
+
+    .toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); background: rgba(31,43,51,0.96); color: #fff; padding: 0.8rem 1.2rem; border-radius: 999px; box-shadow: 0 18px 45px rgba(0,0,0,0.22); opacity: 0; pointer-events: none; transition: opacity 0.18s, transform 0.18s; z-index: 2000; text-align: center; max-width: min(560px,90vw); }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+
+    .section-divider { border: none; border-top: 1px solid var(--stone); margin: 1.4rem 0; }
+
+    select { border: 1.5px solid var(--stone); border-radius: 8px; padding: 0.45rem 0.6rem; font-size: 0.9rem; background: #fff; }
+
+    /* Voice message boxes */
+    .wbox { border: 1.5px solid var(--stone); border-radius: 14px; padding: 1rem 1.1rem; margin-bottom: 1rem; background: #fcfdfc; }
+    .wbox-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.35rem; }
+    .wbox-title { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .wbox-kind { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 999px; }
+    .wbox-kind.menu    { background: #dbeafe; color: #1e40af; }
+    .wbox-kind.message { background: #fef3c7; color: #92400e; }
+    .wbox-desc { font-size: 0.83rem; color: rgba(11,29,36,0.6); margin-bottom: 0.75rem; line-height: 1.45; }
+    .wbox-toggle { display: inline-flex; border: 1.5px solid var(--stone); border-radius: 999px; overflow: hidden; flex-shrink: 0; }
+    .wbox-toggle button { border: none; background: #fff; padding: 0.4rem 0.85rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: rgba(11,29,36,0.55); font-family: inherit; transition: background 0.12s, color 0.12s; }
+    .wbox-toggle button.active { background: var(--pine); color: #fff; }
+    .wbox-input label { margin-bottom: 0.3rem; }
+
+    /* Section header that groups the menu messages by where they sit in the call */
+    .wgroup { display: flex; align-items: center; gap: 0.6rem; margin: 1.6rem 0 0.8rem; }
+    .wgroup:first-child { margin-top: 0.2rem; }
+    .wgroup-title { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--pine); white-space: nowrap; }
+    .wgroup-line { flex: 1; height: 1px; background: var(--stone); }
+</style>
+</head>
+<body>
+<div class="top-bar">IVR Editor — manage menu messages and pricing for phones, tablets, cases, accessories &amp; other items. Changes save automatically. Use PUBLISH-TWILIO.bat to push to the phone system.</div>
+<div class="wrap">
+  <header class="site-header">
+    <a href="index.html"><img src="images/mobile-express-logo.png" alt="Mobile Express NY" style="height:3rem;width:auto;"></a>
+    <div class="header-links">
+      <a href="admin-home.html">← Admin Home</a>
+      <a href="admin.html">Website Admin</a>
+      <a href="admin-ivr.html" style="color:var(--copper);">IVR Editor</a>
+    </div>
+  </header>
+
+  <div class="save-status" id="saveStatus"></div>
+
+  <!-- VOICE MESSAGES & MENUS -->
+  <div class="panel">
+    <div class="panel-title">Voice Messages &amp; Menus</div>
+    <div class="panel-sub">Every message and menu callers hear on the hotline. For each one, choose <strong>🗣 Speak text</strong> (type what the system should say) or <strong>🔊 Play audio</strong> (paste an MP3 link). Changes save automatically and write straight to the phone flow. Use <strong>PUBLISH-TWILIO.bat</strong> to push them live.</div>
+    <div id="widgets-list"><div style="color:rgba(11,29,36,0.5);font-size:0.9rem;">Loading…</div></div>
+  </div>
+
+  <!-- PRODUCT CATALOG (one panel per category, rendered by JS) -->
+  <div class="panel" style="background:transparent;border:none;box-shadow:none;padding:0;margin-bottom:0.5rem;">
+    <div class="panel-title">Order Catalog</div>
+    <div class="panel-sub">The 6 categories callers shop from after pressing 1 (Place a new order). Within each category, items are numbered <strong>1, 2, 3…</strong> — that's the digit the caller presses. The "list message" is what the caller hears for that category; keep it in sync with the items below it.</div>
+  </div>
+  <div id="catalog-panels"></div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── State ──
+  // The 6 shop categories, in submenu order. Each = one panel + a flow bucket.
+  const CATS = [
+    { key: 'phone',  label: '1 · Phones',               dual: true,  hint: 'Phones support talk-only / talk-and-text plans, or a single price each.' },
+    { key: 'case',   label: '2 · Cases & Accessories',  dual: false, hint: 'Phone cases and accessories.' },
+    { key: 'tablet', label: '3 · Tablets',              dual: false, hint: 'Tablets.' },
+    { key: 'travel', label: '4 · Travel SIMs & Phones', dual: false, hint: 'International / travel SIMs and phones. Add the Empty Global SIM here as an item.' },
+    { key: 'local',  label: '5 · Local SIMs & Plans',   dual: false, hint: 'Local SIMs and phone plans.' },
+    { key: 'other',  label: '6 · Other Items',          dual: false, hint: 'Anything else.' },
+    { key: 'plan',   label: '7 · Plans',                dual: false, hint: 'Service plans callers can order and pay for by phone. Each plan has a single price.' },
+  ];
+  const CAT_KEYS = CATS.map(c => c.key);
+  const msgKey = key => 'cat_' + key;
+
+  let cfg = { messages: {}, catalog: { items: [] } };
+
+  // ── Init ──
+  (async () => {
+    try {
+      const res = await fetch('/api/ivr-config');
+      if (res.ok) cfg = await res.json();
+    } catch { /* server not running */ }
+    renderAll();
+  })();
+
+  // Bring older config shapes forward: accessory category -> case, old
+  // gather_* message keys -> cat_* list-message keys.
+  function migrate() {
+    const c = cfg.catalog || (cfg.catalog = {});
+    c.items = Array.isArray(c.items) ? c.items : [];
+    c.items.forEach(it => { if (it.category === 'accessory') it.category = 'case'; });
+    const m = cfg.messages || (cfg.messages = {});
+    if (m.cat_phone  == null && (m.gather_phones || m.gather_items)) m.cat_phone  = m.gather_phones || m.gather_items;
+    if (m.cat_case   == null && m.gather_cases)   m.cat_case   = m.gather_cases;
+    if (m.cat_tablet == null && m.gather_tablets) m.cat_tablet = m.gather_tablets;
+    if (m.cat_other  == null && m.gather_other)   m.cat_other  = m.gather_other;
+  }
+
+  function renderAll() {
+    migrate();
+    const host = document.getElementById('catalog-panels');
+    host.innerHTML = '';
+    CATS.forEach(cat => host.appendChild(buildPanel(cat)));
+    (cfg.catalog.items || []).forEach(item => {
+      const key = CAT_KEYS.includes(item.category) ? item.category : 'other';
+      addRow(key, item);
+    });
+  }
+
+  function buildPanel(cat) {
+    const panel = document.createElement('div');
+    panel.className = 'panel';
+    const head = cat.dual
+      ? `<tr><th>Press #</th><th>Name</th><th>SKU</th><th>Pricing</th><th>Talk &amp; Text $</th><th>Talk &amp; Media $</th><th>Talk $</th><th>Single $</th><th title="Requires an IMEI per unit">Serial</th><th></th></tr>`
+      : `<tr><th>Press #</th><th>Name</th><th>SKU</th><th>Price $</th><th title="Requires an IMEI per unit">Serial</th><th></th></tr>`;
+    panel.innerHTML = `
+      <div class="panel-title">${cat.label}</div>
+      <div class="panel-sub">${cat.hint}</div>
+      <label>List message callers hear</label>
+      <textarea id="msg-${cat.key}" rows="3" placeholder="e.g. Press 1 for …, press 2 for …, press star to go back."></textarea>
+      <div class="tbl-wrap" style="margin-top:1rem;">
+        <table><thead>${head}</thead><tbody id="items-${cat.key}-body"></tbody></table>
+      </div>
+      <button class="add-row-btn" type="button">+ Add item</button>
+    `;
+    const ta = panel.querySelector('#msg-' + cat.key);
+    ta.value = (cfg.messages || {})[msgKey(cat.key)] || '';
+    ta.addEventListener('input', scheduleAutoSave);
+    const body = panel.querySelector('#items-' + cat.key + '-body');
+    body.addEventListener('input', scheduleAutoSave);
+    body.addEventListener('change', scheduleAutoSave);
+    panel.querySelector('.add-row-btn').addEventListener('click', () => { addRow(cat.key); scheduleAutoSave(); });
+    return panel;
+  }
+
+  function addRow(catKey, item = {}) {
+    const cat = CATS.find(c => c.key === catKey);
+    const tbody = document.getElementById('items-' + catKey + '-body');
+    if (!cat || !tbody) return;
+    const ser = item.serialized != null ? item.serialized : (catKey === 'phone');
+    const serCell = `<td style="text-align:center"><input type="checkbox" class="item-serial" ${ser ? 'checked' : ''}></td>`;
+    const tr = document.createElement('tr');
+    const skuCell = `<td><input type="text" class="item-sku" value="${esc(item.sku ?? '')}" placeholder="SKU" style="width:95px;"></td>`;
+    if (cat.dual) {
+      const isDual = item.mode !== 'single';
+      const dis = !isDual ? 'disabled style="opacity:.3"' : '';
+      tr.innerHTML = `
+        <td><input type="number" class="item-num" value="${item.number ?? ''}" min="1" max="99" step="1" style="width:70px;"></td>
+        <td><input type="text" class="item-name" value="${esc(item.name ?? '')}" placeholder="e.g. Wonder Phone"></td>
+        ${skuCell}
+        <td><select class="item-mode"><option value="dual" ${isDual ? 'selected' : ''}>Dual price</option><option value="single" ${!isDual ? 'selected' : ''}>Single price</option></select></td>
+        <td><input type="number" class="item-talk-text"  value="${item.talk_text_price ?? ''}"  min="0" step="0.01" ${dis}></td>
+        <td><input type="number" class="item-talk-media" value="${item.talk_media_price ?? ''}" min="0" step="0.01" ${dis}></td>
+        <td><input type="number" class="item-talk-only"  value="${item.talk_only_price ?? ''}"  min="0" step="0.01" ${dis}></td>
+        <td><input type="number" class="item-single" value="${item.price ?? ''}" min="0" step="0.01" ${isDual ? 'disabled style="opacity:.3"' : ''}></td>
+        ${serCell}
+        <td><button class="row-del" type="button" title="Delete">✕</button></td>
+      `;
+      tr.querySelector('.item-mode').addEventListener('change', e => onModeChange(e.target));
+    } else {
+      tr.innerHTML = `
+        <td><input type="number" class="item-num" value="${item.number ?? ''}" min="1" max="99" step="1" style="width:70px;"></td>
+        <td><input type="text" class="item-name" value="${esc(item.name ?? '')}" placeholder="Item name"></td>
+        ${skuCell}
+        <td><input type="number" class="item-single" value="${item.price ?? ''}" min="0" step="0.01"></td>
+        ${serCell}
+        <td><button class="row-del" type="button" title="Delete">✕</button></td>
+      `;
+    }
+    tr.querySelector('.row-del').addEventListener('click', () => { tr.remove(); scheduleAutoSave(); });
+    tbody.appendChild(tr);
+  }
+
+  function onModeChange(sel) {
+    const tr = sel.closest('tr');
+    const isDual = sel.value === 'dual';
+    ['.item-talk-text', '.item-talk-media', '.item-talk-only'].forEach(c => {
+      const el = tr.querySelector(c);
+      el.disabled = !isDual;
+      el.style.opacity = isDual ? '1' : '0.3';
+    });
+    const single = tr.querySelector('.item-single');
+    single.disabled = isDual;
+    single.style.opacity = isDual ? '0.3' : '1';
+  }
+
+  // ── Collect current state from DOM ──
+  function collectCfg() {
+    const items = [];
+    CATS.forEach(cat => {
+      document.querySelectorAll('#items-' + cat.key + '-body tr').forEach(tr => {
+        const num  = Number(tr.querySelector('.item-num').value);
+        const name = tr.querySelector('.item-name').value.trim();
+        if (!num || !name) return;
+        const serialized = !!(tr.querySelector('.item-serial') && tr.querySelector('.item-serial').checked);
+        const skuEl = tr.querySelector('.item-sku');
+        const sku = skuEl ? skuEl.value.trim() : '';
+        if (cat.dual && tr.querySelector('.item-mode') && tr.querySelector('.item-mode').value === 'dual') {
+          items.push({ number: num, name, category: cat.key, mode: 'dual', serialized, sku,
+            talk_text_price:  Number(tr.querySelector('.item-talk-text').value)  || 0,
+            talk_media_price: Number(tr.querySelector('.item-talk-media').value) || 0,
+            talk_only_price:  Number(tr.querySelector('.item-talk-only').value)  || 0 });
+        } else {
+          items.push({ number: num, name, category: cat.key, mode: 'single', serialized, sku, price: Number(tr.querySelector('.item-single').value) || 0 });
+        }
+      });
+    });
+
+    const messages = Object.assign({}, cfg.messages);
+    CATS.forEach(cat => {
+      const ta = document.getElementById('msg-' + cat.key);
+      messages[msgKey(cat.key)] = ta ? ta.value : '';
+    });
+
+    return { messages, catalog: { items } };
+  }
+
+  // ── Auto-save ──
+  let saveTimer = null;
+  const statusEl = document.getElementById('saveStatus');
+
+  function scheduleAutoSave() {
+    clearTimeout(saveTimer);
+    statusEl.textContent = 'Unsaved changes...';
+    statusEl.className = 'save-status saving';
+    saveTimer = setTimeout(autoSave, 1500);
+  }
+
+  async function autoSave() {
+    cfg = collectCfg();
+    try {
+      await fetch('/api/ivr-config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cfg) });
+      const res = await fetch('/api/ivr-apply', { method: 'POST' });
+      const data = await res.json();
+      if (data.ok) {
+        statusEl.textContent = 'Saved and applied ✓';
+        statusEl.className = 'save-status saved';
+      } else {
+        statusEl.textContent = 'Apply error: ' + data.error;
+        statusEl.className = 'save-status saving';
+      }
+    } catch {
+      statusEl.textContent = 'Server not running — double-click START.bat first';
+      statusEl.className = 'save-status saving';
+    }
+  }
+
+  // Catalog input listeners are wired per-panel in buildPanel()/addRow().
+
+  // ── Voice messages & menus (every gather / say-play widget) ──
+  let widgets = [];
+
+  async function loadWidgets() {
+    const host = document.getElementById('widgets-list');
+    try {
+      const res = await fetch('/api/ivr-widgets');
+      if (!res.ok) throw new Error('load failed');
+      widgets = (await res.json()).widgets || [];
+      // Keep separate text/audio values so toggling never loses what was typed.
+      widgets.forEach(w => {
+        w.sayValue  = w.mode === 'say'  ? (w.value || '') : '';
+        w.playValue = w.mode === 'play' ? (w.value || '') : '';
+      });
+      renderWidgets();
+    } catch {
+      host.innerHTML = '<div style="color:var(--copper);font-size:0.9rem;">Server not running — double-click START.bat first, then refresh.</div>';
+    }
+  }
+
+  function renderWidgets() {
+    const host = document.getElementById('widgets-list');
+    host.innerHTML = '';
+    let lastSection = null;
+    widgets.forEach((w, i) => {
+      const section = w.section || 'Other Messages';
+      if (section !== lastSection) {
+        const hdr = document.createElement('div');
+        hdr.className = 'wgroup';
+        hdr.innerHTML = `<span class="wgroup-title">${esc(section)}</span><span class="wgroup-line"></span>`;
+        host.appendChild(hdr);
+        lastSection = section;
+      }
+      const box = document.createElement('div');
+      box.className = 'wbox';
+      box.dataset.idx = i;
+      box.innerHTML = `
+        <div class="wbox-head">
+          <div class="wbox-title">
+            <span>${esc(w.title || w.name)}</span>
+            <span class="wbox-kind ${w.kind === 'message' ? 'message' : 'menu'}">${w.kind === 'message' ? 'Message' : 'Menu'}</span>
+          </div>
+          <div class="wbox-toggle">
+            <button type="button" data-mode="say"  class="${w.mode === 'say'  ? 'active' : ''}">🗣 Speak text</button>
+            <button type="button" data-mode="play" class="${w.mode === 'play' ? 'active' : ''}">🔊 Play audio</button>
+          </div>
+        </div>
+        <div class="wbox-desc">${esc(w.description || '')}</div>
+        <div class="wbox-input"></div>
+      `;
+      box.querySelectorAll('.wbox-toggle button').forEach(btn =>
+        btn.addEventListener('click', () => setWidgetMode(i, btn.dataset.mode))
+      );
+      host.appendChild(box);
+      renderWidgetInput(box, w, i);
+    });
+  }
+
+  function renderWidgetInput(box, w, i) {
+    const slot = box.querySelector('.wbox-input');
+    if (w.mode === 'play') {
+      slot.innerHTML = `<label>Audio link (MP3 URL)</label><input type="text" placeholder="https://…/message.mp3" value="${esc(w.playValue || '')}">`;
+      slot.querySelector('input').addEventListener('input', e => updateWidget(i, e.target.value));
+    } else {
+      slot.innerHTML = `<label>Spoken text</label><textarea rows="3" placeholder="Type what the caller should hear…">${esc(w.sayValue || '')}</textarea>`;
+      slot.querySelector('textarea').addEventListener('input', e => updateWidget(i, e.target.value));
+    }
+  }
+
+  function setWidgetMode(i, mode) {
+    if (widgets[i].mode === mode) return;
+    widgets[i].mode = mode;
+    const box = document.querySelector('.wbox[data-idx="' + i + '"]');
+    box.querySelectorAll('.wbox-toggle button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    renderWidgetInput(box, widgets[i], i);
+    scheduleWidgetSave();
+  }
+
+  function updateWidget(i, val) {
+    if (widgets[i].mode === 'play') widgets[i].playValue = val;
+    else widgets[i].sayValue = val;
+    scheduleWidgetSave();
+  }
+
+  let widgetTimer = null;
+  function scheduleWidgetSave() {
+    clearTimeout(widgetTimer);
+    statusEl.textContent = 'Unsaved changes...';
+    statusEl.className = 'save-status saving';
+    widgetTimer = setTimeout(saveWidgets, 1500);
+  }
+
+  async function saveWidgets() {
+    const payload = {
+      widgets: widgets.map(w => ({
+        name: w.name,
+        mode: w.mode,
+        value: w.mode === 'play' ? w.playValue : w.sayValue,
+      })),
+    };
+    try {
+      const res = await fetch('/api/ivr-widgets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (data.ok) {
+        statusEl.textContent = 'Saved ✓';
+        statusEl.className = 'save-status saved';
+      } else {
+        statusEl.textContent = 'Save error: ' + data.error;
+        statusEl.className = 'save-status saving';
+      }
+    } catch {
+      statusEl.textContent = 'Server not running — double-click START.bat first';
+      statusEl.className = 'save-status saving';
+    }
+  }
+
+  loadWidgets();
+
+  // ── Utils ──
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+  let toastTimer = null;
+  function toast(msg, isErr = false) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.style.background = isErr ? '#7f1d1d' : 'rgba(31,43,51,0.96)';
+    el.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+  }
+</script>
+<style>
+  .login-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(145deg, #fdfbf7, #f3f8f6);
+    display: flex; align-items: center; justify-content: center; z-index: 10000;
+  }
+  .login-box {
+    background: white; padding: 2.5rem; border-radius: 24px;
+    box-shadow: 0 20px 45px rgba(9,23,22,0.1); max-width: 400px; width: 90%;
+  }
+  .login-box h2 { margin-bottom: 1.5rem; color: var(--ink); text-align: center; }
+  .login-box input {
+    width: 100%; padding: 0.8rem 1rem; border: 2px solid var(--stone);
+    border-radius: 12px; margin-bottom: 1rem; font-size: 1rem; font-family: inherit;
+  }
+  .login-box button {
+    width: 100%; padding: 0.8rem 1rem; background: var(--pine); color: white;
+    border: none; border-radius: 12px; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: background 0.2s; font-family: inherit;
+  }
+  .login-box button:hover { background: #0a4a3c; }
+  .login-box .error { color: var(--copper); font-size: 0.9rem; margin-top: 0.5rem; text-align: center; min-height: 1.2rem; }
+  .hidden { display: none !important; }
+</style>
+<script>
+  const ADMIN_PASSWORD = 'admin123';
+  const loginOverlay = document.createElement('div');
+  loginOverlay.className = 'login-overlay';
+  loginOverlay.innerHTML = `
+    <div class="login-box">
+      <h2>Admin Login</h2>
+      <input type="password" id="adminPassword" placeholder="Enter admin password" />
+      <button onclick="checkPassword()">Login</button>
+      <div class="error" id="loginError"></div>
+    </div>
+  `;
+  document.body.insertBefore(loginOverlay, document.body.firstChild);
+
+  function checkPassword() {
+    const pw = document.getElementById('adminPassword').value;
+    if (pw === ADMIN_PASSWORD) {
+      loginOverlay.classList.add('hidden');
+      sessionStorage.setItem('adminAuthenticated', 'true');
+    } else {
+      document.getElementById('loginError').textContent = 'Incorrect password';
+      document.getElementById('adminPassword').value = '';
+    }
+  }
+
+  if (sessionStorage.getItem('adminAuthenticated') === 'true') {
+    loginOverlay.classList.add('hidden');
+  }
+
+  document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+</script>
+</body>
+</html>

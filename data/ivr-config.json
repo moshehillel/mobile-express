@@ -1,0 +1,41 @@
+{
+  "messages": {
+    "cat_phone": "for the wonder phone talk only, press 1. for the star phone talk only, press 2.",
+    "cat_case": "",
+    "cat_tablet": "",
+    "cat_travel": "",
+    "cat_local": "",
+    "cat_plan": "",
+    "cat_other": ""
+  },
+  "catalog": {
+    "items": [
+      {
+        "number": 1,
+        "name": "Wonder Phone",
+        "category": "phone",
+        "mode": "dual",
+        "talk_only_price": 399.99,
+        "talk_text_price": 399.99,
+        "serialized": true
+      },
+      {
+        "number": 2,
+        "name": "Star Phone",
+        "category": "phone",
+        "mode": "dual",
+        "talk_only_price": 399.99,
+        "talk_text_price": 399.99,
+        "serialized": true
+      },
+      {
+        "number": 3,
+        "name": "Kyocera",
+        "category": "phone",
+        "mode": "single",
+        "price": 199.99,
+        "serialized": true
+      }
+    ]
+  }
+}

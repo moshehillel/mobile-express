@@ -1,0 +1,89 @@
+'use strict';
+
+exports.handler = function (context, event, callback) {
+  const https = require('https');
+
+  const rawUrl = event.recording_url;
+  if (!rawUrl) {
+    return callback(null, { transcription: '', error: 'No recording_url provided' });
+  }
+
+  // Twilio RecordingUrl has no extension — append .mp3 to get audio
+  const recordingUrl = rawUrl.replace(/\.(mp3|wav)$/i, '') + '.mp3';
+
+  function download(urlStr, redirects, cb) {
+    if (redirects > 5) return cb(new Error('Too many redirects'));
+    let parsedUrl;
+    try { parsedUrl = new URL(urlStr); } catch (e) { return cb(e); }
+
+    const isTwilio = parsedUrl.hostname.includes('twilio.com') ||
+                     parsedUrl.hostname.includes('twil.io');
+    const headers = isTwilio
+      ? { Authorization: 'Basic ' + Buffer.from(context.ACCOUNT_SID + ':' + context.AUTH_TOKEN).toString('base64') }
+      : {};
+
+    const req = https.request(
+      { hostname: parsedUrl.hostname, path: parsedUrl.pathname + parsedUrl.search,
+        method: 'GET', headers },
+      function (res) {
+        if (res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 307) {
+          return download(res.headers.location, redirects + 1, cb);
+        }
+        if (res.statusCode !== 200) {
+          return cb(new Error('Download failed: ' + res.statusCode));
+        }
+        const chunks = [];
+        res.on('data', c => chunks.push(c));
+        res.on('end', () => cb(null, Buffer.concat(chunks)));
+      }
+    );
+    req.on('error', cb);
+    req.end();
+  }
+
+  function transcribe(audioBuffer, cb) {
+    const boundary = 'TwilioWhisper' + Date.now();
+    const CRLF = '\r\n';
+    const body = Buffer.concat([
+      Buffer.from('--' + boundary + CRLF +
+        'Content-Disposition: form-data; name="model"' + CRLF + CRLF +
+        'whisper-1' + CRLF, 'utf8'),
+      Buffer.from('--' + boundary + CRLF +
+        'Content-Disposition: form-data; name="file"; filename="recording.mp3"' + CRLF +
+        'Content-Type: audio/mpeg' + CRLF + CRLF, 'utf8'),
+      audioBuffer,
+      Buffer.from(CRLF + '--' + boundary + '--' + CRLF, 'utf8')
+    ]);
+
+    const req = https.request(
+      { hostname: 'api.openai.com', path: '/v1/audio/transcriptions', method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + context.OPENAI_API_KEY,
+          'Content-Type': 'multipart/form-data; boundary=' + boundary,
+          'Content-Length': body.length
+        }
+      },
+      function (res) {
+        const chunks = [];
+        res.on('data', c => chunks.push(c));
+        res.on('end', function () {
+          try {
+            const data = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+            cb(null, data.text || '');
+          } catch (e) { cb(e); }
+        });
+      }
+    );
+    req.on('error', cb);
+    req.write(body);
+    req.end();
+  }
+
+  download(recordingUrl, 0, function (err, audio) {
+    if (err) return callback(null, { transcription: '', error: err.message });
+    transcribe(audio, function (err, text) {
+      if (err) return callback(null, { transcription: '', error: err.message });
+      callback(null, { transcription: text });
+    });
+  });
+};

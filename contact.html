@@ -1,0 +1,524 @@
+ <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Express NY | Contact & Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <script src="components.js" defer></script>
+    <style>
+        :root {
+            --ink: #0b1d24;
+            --pine: #0d5c4b;
+            --mint: #d7f2e7;
+            --copper: #f15e2c;
+            --fog: #f4f6f7;
+            --border: rgba(11, 29, 36, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Space Grotesk", "Sora", sans-serif;
+            background: linear-gradient(130deg, #fbfbf7, #f2f8f5);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button, input, textarea {
+            font-family: inherit;
+        }
+
+        .top-bar {
+            background: var(--pine);
+            color: white;
+            text-align: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+        }
+
+        .wrap {
+            width: min(1100px, 94vw);
+            margin: 0 auto;
+        }
+
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.8rem 0 1.2rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .brand-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--ink);
+        }
+
+        .logo img {
+            display: block;
+            height: 3.5rem;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .brand-tagline {
+            font-size: 0.95rem;
+            color: rgba(11, 29, 36, 0.7);
+        }
+
+        .site-nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .site-nav a {
+            text-decoration: none;
+            color: var(--ink);
+            font-weight: 600;
+            padding: 0.3rem 0.4rem;
+        }
+
+        .site-nav a[aria-current="page"] {
+            color: var(--pine);
+        }
+
+        .header-cta {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .cart-btn {
+            border: none;
+            background: var(--pine);
+            color: white;
+            padding: 0.7rem 1.3rem;
+            border-radius: 999px;
+            box-shadow: 0 12px 30px rgba(13, 92, 75, 0.25);
+            cursor: pointer;
+        }
+
+        main {
+            padding: 3rem 0 4rem;
+            display: grid;
+            gap: 2.5rem;
+        }
+
+        .page-hero {
+            background: white;
+            border-radius: 32px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            padding: clamp(2rem, 5vw, 3.5rem);
+            gap: 2rem;
+            box-shadow: 0 35px 70px rgba(11, 29, 36, 0.08);
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .contact-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            background: rgba(13, 92, 75, 0.12);
+            color: var(--pine);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .contact-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 45px rgba(11, 29, 36, 0.05);
+        }
+
+        .info-card h3 {
+            margin-bottom: 0.4rem;
+            font-size: 1.1rem;
+        }
+
+        .split {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            align-items: start;
+        }
+
+        form {
+            background: white;
+            border-radius: 28px;
+            padding: 2rem;
+            box-shadow: 0 25px 70px rgba(11, 29, 36, 0.08);
+            border: 1px solid var(--border);
+        }
+
+        form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        form input,
+        form textarea,
+        form select {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            background: var(--fog);
+        }
+
+        form textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .field {
+            margin-bottom: 1.2rem;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: rgba(11, 29, 36, 0.6);
+            margin-top: 0.35rem;
+        }
+
+        .badge {
+            border-radius: 12px;
+            padding: 0.65rem 1rem;
+            font-weight: 600;
+        }
+
+        .badge.ok {
+            background: rgba(13, 92, 75, 0.1);
+            color: var(--pine);
+        }
+
+        .badge.err {
+            background: rgba(241, 94, 44, 0.12);
+            color: var(--copper);
+        }
+
+        .btn-primary {
+            background: var(--copper);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 0.9rem 1.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 20px 45px rgba(241, 94, 44, 0.35);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .location-card {
+            background: rgba(13, 92, 75, 0.08);
+            border-radius: 24px;
+            padding: 2rem;
+        }
+
+        .site-footer {
+            background: #0f171c;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 3rem;
+            padding: 2.5rem 0;
+        }
+
+        .footer-content {
+            width: min(1100px, 94vw);
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: space-between;
+        }
+
+        .footer-column a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-copy {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .footer-credit {
+            text-align: center;
+            margin-top: 0.45rem;
+            font-size: 0.85rem;
+        }
+
+        .footer-credit a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.78);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer-credit img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .footer-credit a:hover {
+            color: var(--mint);
+        }
+
+        @media (max-width: 720px) {
+            form {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="site-header"></div>
+
+        <main>
+            <section class="page-hero">
+                <div>
+                    <span class="contact-pill">Live concierge 9am - 11pm ET</span>
+                    <h1>Talk to the kosher device team.</h1>
+                    <p>Need help picking the right flip phone, checking filter status, or arranging concierge activation? Our
+                        Mobile Express specialists respond within minutes during business hours.</p>
+                    <div class="contact-info-grid" style="margin-top:1.5rem;">
+                        <article class="info-card">
+                            <h3>Call or text</h3>
+                            <p><a href="tel:+18456663989" style="text-decoration:none;color:var(--pine);font-weight:700;">(845) 666-3989</a></p>
+                            <small>Mon–Thu 9a-11p · Fri 9a-3p</small>
+                        </article>
+                        <article class="info-card">
+                            <h3>Email support</h3>
+                            <p><a href="mailto:support@mobileexpressny.com" style="text-decoration:none;color:var(--pine);font-weight:700;">support@mobileexpressny.com</a></p>
+                            <small>Response within 2 business hours.</small>
+                        </article>
+                    </div>
+                </div>
+                <div class="location-card">
+                    <h3>Service footprint</h3>
+                    <p>Online native storefront with activation support across New York, New Jersey, and nationwide shipping in
+                        2–4 days.</p>
+                    <hr style="margin:1.2rem 0;border:none;border-top:1px solid rgba(11,29,36,0.1);">
+                    <p><strong>Mailing</strong><br>P.O. Box 411 · Monsey, NY 10952</p>
+                    <p><strong>Fulfillment</strong><br>Warehouse dispatch in Brooklyn & Lakewood.</p>
+                </div>
+            </section>
+
+            <section class="split">
+                <div>
+                    <h2>Message concierge support</h2>
+                    <p>For device troubleshooting, filter refreshes, or order status, include the phone owner name and carrier.
+                        We’ll route it to the right Mobile Express specialist.</p>
+                    <div class="info-card" style="margin-top:1.5rem;">
+                        <h3>Need activation tonight?</h3>
+                        <p>Include “rush activation” in the subject line. After hours we’ll SMS a secure link so you can finish the
+                            ticket with our on-call concierge.</p>
+                        <p style="margin-top:0.6rem;">Prefer a direct line? Call or text <a href="tel:+18456663989"
+                                style="text-decoration:none;color:var(--pine);font-weight:700;">(845) 666-3989</a> or email <a
+                                href="mailto:support@mobileexpressny.com"
+                                style="text-decoration:none;color:var(--pine);font-weight:700;">support@mobileexpressny.com</a>.</p>
+                    </div>
+                </div>
+                <form id="contactForm" novalidate>
+                    <div class="field">
+                        <label for="name">Full name</label>
+                        <input id="name" name="name" type="text" placeholder="First Last" required>
+                    </div>
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="field">
+                        <label for="phone">Phone</label>
+                        <input id="phone" name="phone" type="tel" placeholder="(845) 666-3989" required>
+                        <div class="hint">Digits only; auto-formats to (123) 456-7890.</div>
+                    </div>
+                    <div class="field">
+                        <label for="topic">What do you need?</label>
+                        <select id="topic" name="topic" required>
+                            <option value="" disabled selected>Select a topic</option>
+                            <option value="activation">Activation & filter setup</option>
+                            <option value="order">Order or shipping status</option>
+                            <option value="technical">Device/technical help</option>
+                            <option value="billing">Billing & payments</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" placeholder="Share details so we can respond faster (min 20 characters)" required></textarea>
+                        <div class="hint"><span id="charCount">0</span>/20 minimum</div>
+                    </div>
+                    <div class="badge ok" id="formOk" style="display:none;">Message ready to send.</div>
+                    <div class="badge err" id="formErr" style="display:none;">Please complete all required fields.</div>
+                    <button class="btn-primary" id="btnSubmit" type="submit" disabled>Send to concierge</button>
+                    <noscript>
+                        <p class="badge err" role="alert">JavaScript is required to submit this form.</p>
+                    </noscript>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <div id="site-footer"></div>
+
+    <script>
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('btnSubmit');
+        const charCount = document.getElementById('charCount');
+        const messageField = document.getElementById('message');
+        const phoneField = document.getElementById('phone');
+        const okBanner = document.getElementById('formOk');
+        const errBanner = document.getElementById('formErr');
+
+        const formatPhone = (value) => {
+            const digits = value.replace(/\D/g, '').slice(0, 10);
+            const parts = [];
+            if (digits.length > 0) parts.push('(' + digits.slice(0, 3));
+            if (digits.length >= 4) parts.push(') ' + digits.slice(3, 6));
+            if (digits.length >= 7) parts.push('-' + digits.slice(6, 10));
+            return parts.join('');
+        };
+
+        phoneField.addEventListener('input', () => {
+            phoneField.value = formatPhone(phoneField.value);
+        });
+
+        const MIN_MESSAGE_LENGTH = 20;
+
+        const validate = () => {
+            const filled = form.checkValidity();
+            const longEnough = messageField.value.trim().length >= MIN_MESSAGE_LENGTH;
+            const canSubmit = filled && longEnough;
+
+            submitBtn.disabled = !canSubmit;
+            charCount.textContent = messageField.value.trim().length;
+            if (canSubmit) {
+                okBanner.style.display = 'inline-flex';
+                okBanner.textContent = 'Message ready to send.';
+                errBanner.style.display = 'none';
+            } else {
+                okBanner.style.display = 'none';
+                if (messageField.value.length > 0) {
+                    errBanner.style.display = 'inline-flex';
+                    errBanner.textContent = `Complete all fields and reach ${MIN_MESSAGE_LENGTH} characters.`;
+                } else {
+                    errBanner.style.display = 'none';
+                }
+            }
+        };
+
+        form.addEventListener('input', validate);
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            validate();
+            if (submitBtn.disabled) return;
+
+            submitBtn.textContent = 'Sending…';
+            submitBtn.disabled = true;
+            errBanner.style.display = 'none';
+
+            try {
+                const payload = {
+                    name: form.name.value.trim(),
+                    email: form.email.value.trim(),
+                    phone: form.phone.value.trim(),
+                    topic: form.topic.value,
+                    message: form.message.value.trim()
+                };
+
+                const response = await fetch('https://chatgpt-7837.twil.io/functions/send_contact_email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to send email');
+                }
+
+                okBanner.style.display = 'inline-flex';
+                okBanner.textContent = 'Thanks! A concierge will respond shortly.';
+                form.reset();
+                charCount.textContent = '0';
+            } catch (error) {
+                console.error('Unable to send contact request', error);
+                errBanner.style.display = 'inline-flex';
+                errBanner.textContent = 'Unable to send right now. Please try again or email support@mobileexpressny.com.';
+            } finally {
+                submitBtn.textContent = 'Send to concierge';
+                submitBtn.disabled = true;
+            }
+        });
+
+        const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

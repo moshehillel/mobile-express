@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Express NY | Accessories & Cases</title>
+  <link rel="stylesheet" href="shared.css">
+  <script src="components.js" defer></script>
+  <style>
+    .page-hero {
+      background: linear-gradient(140deg,#0a4538,#0d5c4b 40%,#1f2b33 100%);
+      border-radius: var(--r-xl);
+      color: #fff;
+      padding: clamp(2rem,4vw,3rem);
+      margin: 2rem 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+      gap: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content:'';
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse at 15% 50%,rgba(110,231,199,0.12) 0%,transparent 55%);
+      pointer-events:none;
+    }
+    .page-hero > * { position: relative; z-index:1; }
+    .page-hero h1 {
+      font-family:"Sora",sans-serif;
+      font-size:clamp(1.7rem,3.5vw,2.5rem);
+      font-weight:800;
+      line-height:1.15;
+      margin:0.7rem 0 0.9rem;
+    }
+    .page-hero p { color:rgba(255,255,255,0.75); font-size:0.95rem; line-height:1.7; }
+    .page-hero .hero-tag {
+      display:inline-flex; align-items:center; gap:0.4rem;
+      font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+      color:#6ee7c7; padding:0.3rem 0.8rem;
+      border:1px solid rgba(110,231,199,0.3); border-radius:var(--r-pill);
+      background:rgba(110,231,199,0.08);
+    }
+    .page-hero .info-list { display:flex; flex-direction:column; gap:0.6rem; margin-top:0.8rem; }
+    .page-hero .info-item {
+      display:flex; align-items:center; gap:0.6rem;
+      font-size:0.9rem; color:rgba(255,255,255,0.7);
+    }
+    .page-hero .info-dot {
+      flex-shrink:0; width:7px; height:7px; border-radius:50%;
+      background:#6ee7c7; opacity:0.8;
+    }
+
+    .section-heading {
+      display:flex; justify-content:space-between; align-items:center;
+      gap:1rem; margin:2.5rem 0 1.2rem; flex-wrap:wrap;
+    }
+    .section-heading h2 {
+      font-family:"Sora",sans-serif; font-size:1.5rem; font-weight:800; letter-spacing:-0.01em;
+    }
+    .section-heading small { font-size:0.85rem; color:var(--muted); }
+
+    .product-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+      gap:1.2rem;
+    }
+    .product-card {
+      background:var(--surface);
+      border:1.5px solid var(--border);
+      border-radius:var(--r-lg);
+      overflow:hidden;
+      display:flex; flex-direction:column;
+      box-shadow:var(--shadow-sm);
+      transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s;
+    }
+    .product-card:hover {
+      transform:translateY(-5px);
+      box-shadow:var(--shadow-lg);
+      border-color:rgba(13,92,75,0.2);
+    }
+    .card-img {
+      background:var(--surface-alt);
+      aspect-ratio:4/3;
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+    .card-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+    .product-card:hover .card-img img { transform:scale(1.05); }
+    .card-body { padding:1rem 1.1rem 0.6rem; display:flex; flex-direction:column; gap:0.45rem; flex:1; }
+    .card-body h3 { font-size:0.97rem; font-weight:700; line-height:1.3; }
+    .card-body .desc { font-size:0.82rem; color:var(--muted); line-height:1.5; }
+    .card-price { font-family:"Sora",sans-serif; font-size:1.2rem; font-weight:800; color:var(--pine); }
+    .card-footer { padding:0.8rem 1.1rem; border-top:1px solid var(--border); }
+    .add-btn {
+      width:100%; padding:0.6rem 1rem;
+      font-size:0.88rem; font-weight:700;
+      background:var(--pine); color:#fff;
+      border:none; border-radius:var(--r-pill);
+      cursor:pointer; transition:background 0.15s, transform 0.13s;
+    }
+    .add-btn:hover { background:var(--pine-dark); transform:translateY(-1px); }
+
+    .toast {
+      position:fixed; left:50%; bottom:1.5rem;
+      transform:translateX(-50%);
+      background:var(--charcoal); color:#fff;
+      padding:0.8rem 1.4rem; border-radius:var(--r-pill);
+      box-shadow:var(--shadow-lg);
+      opacity:0; pointer-events:none;
+      transition:opacity 0.18s,transform 0.18s;
+      z-index:2000; font-size:0.9rem;
+    }
+    .toast.active { opacity:1; transform:translateX(-50%) translateY(-6px); }
+  </style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="wrap" style="padding-bottom:4rem;">
+
+  <section class="page-hero">
+    <div>
+      <span class="hero-tag">Accessories &amp; Cases</span>
+      <h1>Cases, chargers, wired audio &amp; kosher filter gear.</h1>
+      <p>Every accessory ships flashed and ready for our curated phone lineup. Mix and match cases, docks, SIM kits, and concierge services to keep your devices protected.</p>
+    </div>
+    <div>
+      <span class="hero-tag" style="color:#fff;border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.07);">Ships in 24h</span>
+      <div class="info-list">
+        <div class="info-item"><span class="info-dot"></span>Nationwide 2–4 day shipping</div>
+        <div class="info-item"><span class="info-dot"></span>Concierge configuration</div>
+        <div class="info-item"><span class="info-dot"></span>Rabbinic-approved components</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-heading">
+    <h2>Shop accessories &amp; cases</h2>
+    <small>Hand-picked · Updated daily</small>
+  </div>
+  <div class="product-grid" id="accessories-grid"></div>
+
+</div>
+
+<div id="site-footer"></div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  const accessoriesGrid = document.getElementById('accessories-grid');
+  const VALID_TYPES = ['phone','case','accessory','tablet','other'];
+  const TYPE_LABELS  = { phone:'Phone', case:'Case', accessory:'Accessory', tablet:'Tablet', other:'Other' };
+
+  const normalizeProduct = (p) => {
+    const type = VALID_TYPES.includes(p.type) ? p.type : 'phone';
+    return { id: p.id, type, name: p.name, price: Number(p.price||0), shortDesc: p.shortDesc||'', image: p.image||'' };
+  };
+
+  const loadAccessories = async () => {
+    const res = await fetch('data/products.json', { cache:'no-store' });
+    if (!res.ok) throw new Error('Unable to load products');
+    const doc = await res.json();
+    return (Array.isArray(doc.products) ? doc.products : [])
+      .map(normalizeProduct)
+      .filter(p => p.type === 'accessory' || p.type === 'case');
+  };
+
+  const createCard = (item) => `
+    <article class="product-card">
+      <div class="card-img">
+        ${item.image ? `<img src="${item.image}" alt="${item.name}" loading="lazy">` : ''}
+      </div>
+      <div class="card-body">
+        <span class="tag">${TYPE_LABELS[item.type]||item.type}</span>
+        <h3>${item.name}</h3>
+        <p class="desc">${item.shortDesc}</p>
+        <div class="card-price">$${item.price.toFixed(2)}</div>
+      </div>
+      <div class="card-footer">
+        <button class="add-btn" data-id="${item.id}">Add to cart</button>
+      </div>
+    </article>`;
+
+  let accessories = [];
+
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  const showToast = (msg) => {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('active');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('active'), 2200);
+  };
+
+  const loadCart = () => {
+    try { const s = JSON.parse(localStorage.getItem('me_cart')); return Array.isArray(s) ? s : []; }
+    catch { return []; }
+  };
+  const cart = loadCart();
+  const saveCart = () => localStorage.setItem('me_cart', JSON.stringify(cart));
+  const updateCartCount = () => {
+    const el = document.getElementById('cartCount');
+    if (el) el.textContent = cart.reduce((s,i) => s + (i.quantity||0), 0);
+  };
+
+  accessoriesGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-id]');
+    if (!btn) return;
+    const item = accessories.find(a => a.id === btn.dataset.id);
+    if (!item) return;
+    const ex = cart.find(c => c.id === item.id && c.type === item.type);
+    if (ex) ex.quantity += 1; else cart.push({ ...item, quantity:1 });
+    saveCart();
+    updateCartCount();
+    showToast(`${item.name} added to cart.`);
+  });
+
+  (async () => {
+    try {
+      accessories = await loadAccessories();
+      accessoriesGrid.innerHTML = accessories.length
+        ? accessories.map(createCard).join('')
+        : '<p style="color:var(--muted);padding:2rem 0;">No accessories found.</p>';
+    } catch (err) {
+      console.warn(err);
+      accessoriesGrid.innerHTML = '<p style="color:var(--muted);padding:2rem 0;">Unable to load accessories right now.</p>';
+    }
+    updateCartCount();
+  })();
+</script>
+</body>
+</html>

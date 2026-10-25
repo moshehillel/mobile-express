@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Express NY | Kosher Flip Phones & Accessories</title>
+  <link rel="stylesheet" href="shared.css">
+  <script src="components.js" defer></script>
+  <style>
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(140deg, #0a4538 0%, #0d5c4b 40%, #1f2b33 100%);
+      color: #fff;
+      padding: clamp(3rem,6vw,5rem) 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 15% 50%, rgba(110,231,199,0.1) 0%, transparent 55%),
+                  radial-gradient(ellipse at 85% 20%, rgba(255,255,255,0.06) 0%, transparent 45%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 55px 55px;
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6ee7c7;
+      margin-bottom: 1.2rem;
+      padding: 0.35rem 0.9rem;
+      border: 1px solid rgba(110,231,199,0.3);
+      border-radius: var(--r-pill);
+      background: rgba(110,231,199,0.08);
+    }
+    .hero-eyebrow-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #6ee7c7;
+      box-shadow: 0 0 8px #6ee7c7;
+      animation: blink 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero h1 {
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2.6rem,5vw,4.2rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 em { font-style: normal; color: #6ee7c7; }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.7);
+      max-width: 460px;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+    .hero-actions { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .hero-btn-main {
+      padding: 0.9rem 2rem;
+      font-size: 0.97rem;
+      font-weight: 700;
+      background: #6ee7c7;
+      color: var(--ink);
+      border: none;
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+      box-shadow: 0 4px 20px rgba(110,231,199,0.3);
+    }
+    .hero-btn-main:hover { background: #9bf0d8; transform: translateY(-2px); }
+    .hero-btn-ghost {
+      padding: 0.9rem 1.6rem;
+      font-size: 0.97rem;
+      font-weight: 600;
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .hero-btn-ghost:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+    .hero-stats { display: flex; gap: 2.5rem; flex-wrap: wrap; }
+    .hero-stat strong {
+      display: block;
+      font-family: "Sora", sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #6ee7c7;
+      line-height: 1;
+      margin-bottom: 0.2rem;
+    }
+    .hero-stat span { font-size: 0.82rem; color: rgba(255,255,255,0.5); }
+
+    .hero-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--r-xl);
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+    }
+    .hero-card-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6ee7c7;
+      margin-bottom: 0.9rem;
+    }
+    .hero-card h3 {
+      font-family: "Sora", sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+    }
+    .service-list { display: flex; flex-direction: column; gap: 0.65rem; }
+    .service-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+    }
+    .service-dot {
+      flex-shrink: 0;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #6ee7c7;
+      opacity: 0.8;
+    }
+
+    /* ── Body sections ── */
+    .section { padding: 4rem 0; }
+    .section-header { margin-bottom: 2rem; }
+
+    /* ── Categories ── */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1rem;
+    }
+    .cat-tile {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.4rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow-xs);
+    }
+    .cat-tile:hover, .cat-tile.active {
+      border-color: rgba(13,92,75,0.3);
+      background: var(--surface-alt);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    .cat-tile.active { border-color: var(--pine); background: var(--pine-light); }
+    .cat-icon { font-size: 1.9rem; margin-bottom: 0.55rem; display: block; }
+    .cat-label { font-weight: 700; font-size: 0.87rem; color: var(--ink); }
+    .cat-tile:hover .cat-label, .cat-tile.active .cat-label { color: var(--pine); }
+
+    /* ── Filter bar ── */
+    .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .filter-bar button {
+      padding: 0.5rem 1.2rem;
+      border-radius: var(--r-pill);
+      border: 1.5px solid var(--stone);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 0.87rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-bar button:hover { border-color: var(--pine); color: var(--pine); background: var(--pine-light); }
+    .filter-bar button.active { background: var(--pine); color: #fff; border-color: var(--pine); }
+
+    .catalog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+    #catalogHeading {
+      font-family: "Sora", sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Product grid ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1.2rem;
+    }
+    .product-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(13,92,75,0.2);
+    }
+    .detail-link {
+      display: block;
+      overflow: hidden;
+      background: var(--surface-alt);
+      aspect-ratio: 4/3;
+      position: relative;
+    }
+    .detail-link img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .product-card:hover .detail-link img { transform: scale(1.05); }
+    .view-badge {
+      position: absolute;
+      bottom: 0.7rem; right: 0.7rem;
+      background: rgba(255,255,255,0.9);
+      color: var(--ink);
+      padding: 0.28rem 0.75rem;
+      border-radius: var(--r-pill);
+      font-size: 0.75rem;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity 0.2s;
+      backdrop-filter: blur(6px);
+    }
+    .product-card:hover .view-badge { opacity: 1; }
+
+    .card-body {
+      padding: 1rem 1.1rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      flex: 1;
+    }
+    .card-body h3 { font-size: 0.97rem; font-weight: 700; line-height: 1.3; color: var(--ink); }
+    .card-body .desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+    .card-price {
+      font-family: "Sora", sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--pine);
+    }
+    .price-variant { font-size: 0.82rem; color: var(--muted); }
+    .price-variant strong { color: var(--pine); font-weight: 700; }
+    .plan-picker select {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--stone);
+      color: var(--ink);
+      border-radius: var(--r-sm);
+      padding: 0.42rem 0.7rem;
+      font-size: 0.86rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .card-footer {
+      padding: 0.8rem 1.1rem;
+      border-top: 1px solid var(--border);
+    }
+    .add-btn {
+      width: 100%;
+      padding: 0.62rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      background: var(--pine);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.13s;
+    }
+    .add-btn:hover { background: var(--pine-dark); transform: translateY(-1px); }
+
+    /* ── Assurance ── */
+    .assurance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+      gap: 1.2rem;
+    }
+    .assurance-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.8rem;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .assurance-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .assurance-icon { font-size: 2rem; margin-bottom: 0.9rem; }
+    .assurance-card h3 { font-weight: 700; margin-bottom: 0.4rem; font-size: 1rem; }
+    .assurance-card p { font-size: 0.87rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── Deal banner ── */
+    .deal-banner {
+      background: linear-gradient(135deg, #0d5c4b, #1a9b76);
+      border-radius: var(--r-xl);
+      color: #fff;
+      padding: 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      margin: 3rem 0;
+    }
+    .deal-banner h2 { font-family: "Sora",sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .deal-banner p { color: rgba(255,255,255,0.75); font-size: 0.93rem; }
+    .deal-banner-btn {
+      background: #fff;
+      color: var(--pine);
+      border: none;
+      border-radius: var(--r-pill);
+      padding: 0.85rem 1.8rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .deal-banner-btn:hover { background: #e0f5ee; transform: translateY(-1px); }
+
+    /* ── Cart drawer ── */
+    .cart-overlay {
+      position: fixed; inset: 0;
+      background: rgba(11,29,36,0.45);
+      backdrop-filter: blur(3px);
+      display: none; z-index: 900;
+    }
+    .cart-overlay.active { display: block; }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0; right: -460px;
+      width: min(440px,100vw);
+      height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+      z-index: 1000;
+      display: flex; flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .cart-drawer.active { right: 0; }
+    .cart-head {
+      padding: 1.2rem 1.4rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .cart-head h3 { font-family:"Sora",sans-serif; font-size:1.05rem; font-weight:700; }
+    .cart-close {
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--muted); width: 32px; height: 32px;
+      border-radius: 8px; font-size: 0.9rem;
+      display: flex; align-items:center; justify-content:center;
+      cursor: pointer; transition: border-color 0.15s, color 0.15s;
+    }
+    .cart-close:hover { border-color: var(--pine); color: var(--pine); }
+    .cart-items {
+      flex: 1; overflow-y: auto; padding: 1rem 1.2rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .cart-empty { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 2rem 0; }
+    .cart-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 0.85rem 1rem;
+      display: flex; flex-direction:column; gap:0.25rem;
+    }
+    .cart-item strong { font-size: 0.92rem; }
+    .cart-item small { font-size: 0.79rem; color: var(--muted); }
+    .cart-item footer {
+      display: flex; justify-content:space-between; align-items:center; margin-top:0.2rem;
+    }
+    .cart-item footer span { font-weight:700; color:var(--pine); }
+    .cart-item footer button {
+      background:none; border:none; color:var(--copper); font-size:0.79rem; font-weight:600; cursor:pointer;
+    }
+    .cart-item footer button:hover { opacity:0.75; }
+    .cart-foot {
+      padding: 1.2rem 1.4rem; border-top: 1px solid var(--border);
+    }
+    .cart-subtotal {
+      display: flex; justify-content:space-between; align-items:center;
+      margin-bottom: 0.9rem; font-size: 0.93rem;
+    }
+    .cart-subtotal strong { font-family:"Sora",sans-serif; font-size:1.25rem; font-weight:800; color:var(--pine); }
+    #checkoutBtn {
+      width:100%; padding:0.85rem; font-size:0.95rem; font-weight:700;
+      background:var(--pine); color:#fff; border:none; border-radius:var(--r-pill);
+      cursor:pointer; transition:background 0.15s;
+    }
+    #checkoutBtn:hover { background:var(--pine-dark); }
+
+    /* ── AI FAB ── */
+    .ai-fab {
+      position: fixed; bottom: 1.8rem; right: 1.8rem; z-index: 800;
+      width: 52px; height: 52px; border-radius: 50%;
+      border: none; background: var(--pine); color: #fff;
+      font-size: 1.25rem;
+      display: flex; align-items:center; justify-content:center;
+      box-shadow: 0 6px 22px rgba(13,92,75,0.35);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .ai-fab:hover { transform: scale(1.08); box-shadow: 0 10px 30px rgba(13,92,75,0.45); }
+    .ai-panel {
+      position: fixed; bottom: 4.8rem; right: 1.8rem;
+      width: min(320px, calc(100vw - 2rem));
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--r-xl); padding: 1.4rem;
+      box-shadow: var(--shadow-lg); z-index: 800;
+      display: none; animation: slideUp 0.2s ease;
+    }
+    .ai-panel.open { display: block; }
+    @keyframes slideUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+    .ai-panel h4 { font-family:"Sora",sans-serif; font-size:0.97rem; font-weight:700; margin-bottom:0.25rem; }
+    .ai-panel p { font-size:0.83rem; color:var(--muted); margin-bottom:1rem; line-height:1.5; }
+    .ai-quick { display:flex; flex-direction:column; gap:0.4rem; }
+    .ai-quick a {
+      display:block; padding:0.5rem 0.85rem;
+      border-radius:var(--r-sm); border:1.5px solid var(--border);
+      font-size:0.83rem; color:var(--muted); background:var(--bg);
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .ai-quick a:hover { border-color:var(--pine); color:var(--pine); }
+
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-card { display: none; }
+      .categories-grid { grid-template-columns: repeat(3,1fr); }
+      .deal-banner { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 550px) {
+      .categories-grid { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<!-- Hero -->
+<section class="hero" id="featured">
+  <div class="hero-grid"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span> Since 2014 · Online-only · NY Trusted</div>
+        <h1>Kosher phones,<br><em>delivered fast.</em></h1>
+        <p class="hero-sub">Mobile Express NY is New York's premier source for filtered flip phones, tablets, cases, and accessories — trusted by thousands of families, schools, and fleets.</p>
+        <div class="hero-actions">
+          <button class="hero-btn-main" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+          <button class="hero-btn-ghost" onclick="window.location.href='contact.html'">Talk to an Expert</button>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><strong>120+</strong><span>Devices in stock</span></div>
+          <div class="hero-stat"><strong>24h</strong><span>Tri-state delivery</span></div>
+          <div class="hero-stat"><strong>4.9★</strong><span>Customer rating</span></div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">White-glove services</div>
+        <h3>Everything handled for you</h3>
+        <div class="service-list">
+          <div class="service-item"><span class="service-dot"></span>Remote flashing &amp; filter install</div>
+          <div class="service-item"><span class="service-dot"></span>Family and fleet onboarding</div>
+          <div class="service-item"><span class="service-dot"></span>Rabbinic-approved firmware</div>
+          <div class="service-item"><span class="service-dot"></span>Number porting &amp; activation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories -->
+<div class="wrap section fade-in">
+  <div class="section-header">
+    <p class="section-eyebrow">Browse</p>
+    <h2 class="section-title">Shop by category</h2>
+    <p class="section-sub">Explore our full range of kosher-ready devices and accessories.</p>
+  </div>
+  <div class="categories-grid">
+    <button class="cat-tile" data-cat-filter="phone"><span class="cat-icon">📱</span><span class="cat-label">Phones</span></button>
+    <button class="cat-tile" data-cat-filter="tablet"><span class="cat-icon">💻</span><span class="cat-label">Tablets</span></button>
+    <button class="cat-tile" data-cat-filter="case"><span class="cat-icon">🛡️</span><span class="cat-label">Cases</span></button>
+    <button class="cat-tile" data-cat-filter="accessory"><span class="cat-icon">⚡</span><span class="cat-label">Accessories</span></button>
+    <button class="cat-tile" data-cat-filter="plan"><span class="cat-icon">📶</span><span class="cat-label">Plans</span></button>
+    <button class="cat-tile" data-cat-filter="other"><span class="cat-icon">✦</span><span class="cat-label">Other Items</span></button>
+  </div>
+</div>
+
+<!-- Catalog -->
+<section class="wrap" id="catalog" style="padding-bottom:4rem;">
+  <div class="catalog-header fade-in">
+    <h2 id="catalogHeading">All products</h2>
+    <span style="font-size:0.83rem;color:var(--muted);">Hand-tested · Filters installed · Warranty included</span>
+  </div>
+  <div class="filter-bar fade-in" role="group" aria-label="Product filters">
+    <button class="active" data-filter="all">All</button>
+    <button data-filter="phone">Phones</button>
+    <button data-filter="tablet">Tablets</button>
+    <button data-filter="case">Cases</button>
+    <button data-filter="accessory">Accessories</button>
+    <button data-filter="plan">Plans</button>
+    <button data-filter="other">Other Items</button>
+  </div>
+  <div class="product-grid" id="phones-grid"></div>
+</section>
+
+<!-- Deal banner -->
+<div class="wrap fade-in">
+  <div class="deal-banner">
+    <div>
+      <h2>Free delivery on orders over $99</h2>
+      <p>Nationwide shipping available · Trusted since 2014</p>
+    </div>
+    <button class="deal-banner-btn" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+  </div>
+</div>
+
+<!-- Assurance -->
+<div class="wrap section fade-in">
+  <div class="section-header">
+    <p class="section-eyebrow">Why us</p>
+    <h2 class="section-title">Built for your community</h2>
+  </div>
+  <div class="assurance-grid">
+    <article class="assurance-card">
+      <div class="assurance-icon">🔒</div>
+      <h3>Online-only confidence</h3>
+      <p>Every order processes through MobileExpressNY.com with secure checkout, live tracking, and real-time updates — no in-person pickup required.</p>
+    </article>
+    <article class="assurance-card">
+      <div class="assurance-icon">🚀</div>
+      <h3>Fast nationwide shipping</h3>
+      <p>Expedited nationwide shipping available. Orders processed and dispatched from Brooklyn &amp; Lakewood.</p>
+    </article>
+    <article class="assurance-card">
+      <div class="assurance-icon">🎯</div>
+      <h3>Remote concierge</h3>
+      <p>White-glove activation, number porting, and family training over secure video call or phone. We stay with you throughout.</p>
+    </article>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+
+<!-- Cart -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+  <div class="cart-head">
+    <h3>Your cart</h3>
+    <button class="cart-close" id="closeCartBtn" aria-label="Close">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <div class="cart-subtotal"><span>Subtotal</span><strong id="cartSubtotal">$0.00</strong></div>
+    <button id="checkoutBtn">Proceed to checkout</button>
+  </div>
+</aside>
+
+<!-- AI FAB -->
+<button class="ai-fab" id="aiFab" aria-label="Get help">💬</button>
+<div class="ai-panel" id="aiPanel">
+  <h4>Need help? 👋</h4>
+  <p>We're here to help you find the perfect device for your family or fleet.</p>
+  <div class="ai-quick">
+    <a href="tel:+18456663989">📞 Call: (845) 666-3989</a>
+    <a href="mailto:hello@mobileexpressny.com">✉️ Email us</a>
+    <a href="order-status.html">📦 Track my order</a>
+    <a href="#catalog" id="aiShopLink">🛍️ Browse all products</a>
+  </div>
+</div>
+
+<script>
+  let allProducts = [];
+  let activeFilter = 'all';
+
+  const VALID_TYPES = ['phone', 'case', 'accessory', 'tablet', 'plan', 'other'];
+  const TYPE_LABELS = { phone: 'Phone', case: 'Case', accessory: 'Accessory', tablet: 'Tablet', plan: 'Plan', other: 'Other' };
+
+  const normalizeProduct = (p) => {
+    const type = VALID_TYPES.includes(p.type) ? p.type : 'phone';
+    const image = p.image || '';
+    const gallery = Array.isArray(p.gallery) ? p.gallery : (image ? [image] : []);
+    const plans = type === 'phone'
+      ? (Array.isArray(p.plans) && p.plans.length ? p.plans : ['Talk & Text', 'Talk & Media', 'Talk'])
+      : [];
+    return {
+      id: p.id, type, name: p.name,
+      price: Number(p.price || 0),
+      shortDesc: p.shortDesc || '',
+      longDesc: p.longDesc || p.shortDesc || '',
+      detailDesc: p.detailDesc || '',
+      image, gallery, plans,
+      variants: Array.isArray(p.variants) ? p.variants : undefined,
+    };
+  };
+
+  const loadCatalog = async () => {
+    const res = await fetch('data/products.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('Unable to load products');
+    const doc = await res.json();
+    allProducts = (Array.isArray(doc.products) ? doc.products : []).map(normalizeProduct);
+  };
+
+  const loadCart = () => {
+    try { const s = JSON.parse(localStorage.getItem('me_cart')); return Array.isArray(s) ? s : []; }
+    catch { return []; }
+  };
+
+  const cart = loadCart();
+
+  const phonesGrid   = document.getElementById('phones-grid');
+  const cartDrawer   = document.getElementById('cartDrawer');
+  const cartOverlay  = document.getElementById('cartOverlay');
+  const cartItemsEl  = document.getElementById('cartItems');
+  const cartSubtotal = document.getElementById('cartSubtotal');
+
+  function getCartCountEl() { return document.getElementById('cartCount'); }
+
+  const createCard = (item, type) => {
+    const plans = type === 'phone' && item.plans && item.plans.length ? item.plans : null;
+    const img   = (item.gallery && item.gallery.length) ? item.gallery[0] : item.image;
+
+    let priceBlock = '';
+    if (item.variants && item.variants.length) {
+      priceBlock = item.variants.map(v => `<div class="price-variant"><strong>${v.name}:</strong> $${v.price.toFixed(2)}</div>`).join('');
+    } else {
+      priceBlock = `<div class="card-price">$${item.price.toFixed(2)}</div>`;
+    }
+
+    return `
+    <article class="product-card">
+      <a class="detail-link" href="detail.html?type=${type}&id=${item.id}" aria-label="View ${item.name}">
+        ${img ? `<img src="${img}" alt="${item.name}" loading="lazy">` : ''}
+        <span class="view-badge">View details</span>
+      </a>
+      <div class="card-body">
+        <span class="tag">${TYPE_LABELS[type] || type}</span>
+        <h3>${item.name}</h3>
+        <p class="desc">${item.shortDesc}</p>
+        ${priceBlock}
+        ${plans ? `<div class="plan-picker"><select data-plan-select aria-label="Select plan">${plans.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>` : ''}
+      </div>
+      <div class="card-footer">
+        <button class="add-btn" data-action="add" data-type="${type}" data-id="${item.id}">Add to cart</button>
+      </div>
+    </article>`;
+  };
+
+  const renderProducts = () => {
+    if (!phonesGrid) return;
+    const filtered = activeFilter === 'all' ? allProducts : allProducts.filter(p => p.type === activeFilter);
+    phonesGrid.innerHTML = filtered.map(p => createCard(p, p.type)).join('');
+    const h = document.getElementById('catalogHeading');
+    if (h) {
+      const lbl = activeFilter === 'all' ? 'All products' : (TYPE_LABELS[activeFilter] + 's');
+      h.textContent = `${lbl} (${filtered.length})`;
+    }
+  };
+
+  const getProduct = (type, id) => allProducts.find(i => i.id === id);
+
+  const updateCartUI = () => {
+    const total = cart.reduce((s, i) => s + i.quantity, 0);
+    const sub   = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+    if (cartSubtotal) cartSubtotal.textContent = `$${sub.toFixed(2)}`;
+    const ce = getCartCountEl();
+    if (ce) ce.textContent = total;
+    if (cartItemsEl) {
+      cartItemsEl.innerHTML = !cart.length
+        ? '<p class="cart-empty">Your cart is empty.</p>'
+        : cart.map(item => `
+          <div class="cart-item">
+            <strong>${item.name}</strong>
+            <small>${[TYPE_LABELS[item.type]||item.type, item.plan||null, `Qty ${item.quantity}`].filter(Boolean).join(' · ')}</small>
+            <footer>
+              <span>$${(item.price*item.quantity).toFixed(2)}</span>
+              <button data-remove="${item.id}" data-type="${item.type}" data-plan="${item.plan||''}">Remove</button>
+            </footer>
+          </div>`).join('');
+    }
+    localStorage.setItem('me_cart', JSON.stringify(cart));
+  };
+
+  const addToCart = (product, type, opts = {}) => {
+    const plan = opts.plan || null;
+    const ex = cart.find(i => i.id === product.id && i.type === type && (i.plan||null) === plan);
+    if (ex) ex.quantity += 1; else cart.push({ ...product, type, plan, quantity: 1 });
+    updateCartUI();
+  };
+
+  const openCart  = () => { cartOverlay.classList.add('active'); cartDrawer.classList.add('active'); };
+  const closeCart = () => { cartOverlay.classList.remove('active'); cartDrawer.classList.remove('active'); };
+
+  if (phonesGrid) phonesGrid.addEventListener('click', handleCardActions);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Wire cart button to open drawer (override link from components.js)
+    const cartBtn = document.getElementById('openCartBtn');
+    if (cartBtn) cartBtn.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
+    document.getElementById('closeCartBtn')?.addEventListener('click', closeCart);
+    document.getElementById('checkoutBtn')?.addEventListener('click', () => { closeCart(); window.location.href = 'checkout.html'; });
+  });
+
+  cartOverlay.addEventListener('click', closeCart);
+
+  cartItemsEl?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-remove]');
+    if (!btn) return;
+    const id = btn.dataset.remove, type = btn.dataset.type, plan = btn.dataset.plan || '';
+    const idx = cart.findIndex(i => i.id === id && i.type === type && (i.plan||'') === plan);
+    if (idx > -1) { cart.splice(idx, 1); updateCartUI(); }
+  });
+
+  // Category tiles
+  document.querySelector('.categories-grid')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-cat-filter]');
+    if (!btn) return;
+    activeFilter = btn.dataset.catFilter;
+    document.querySelectorAll('.filter-bar [data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === activeFilter));
+    document.querySelectorAll('.cat-tile').forEach(t => t.classList.toggle('active', t.dataset.catFilter === activeFilter));
+    renderProducts();
+    document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Filter bar
+  document.querySelector('.filter-bar')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-filter]');
+    if (!btn) return;
+    activeFilter = btn.dataset.filter;
+    document.querySelectorAll('.filter-bar [data-filter]').forEach(b => b.classList.toggle('active', b === btn));
+    renderProducts();
+  });
+
+  function handleCardActions(event) {
+    const btn = event.target.closest('[data-action]');
+    if (!btn) return;
+    const { action, id, type } = btn.dataset;
+    const product = getProduct(type, id);
+    if (!product) return;
+    if (action === 'add') {
+      const card = btn.closest('.product-card');
+      const planSel = card?.querySelector('[data-plan-select]');
+      addToCart(product, type, { plan: planSel ? planSel.value : (type === 'phone' ? 'Talk & Text' : null) });
+      openCart();
+    }
+  }
+
+  // AI FAB
+  const aiFab   = document.getElementById('aiFab');
+  const aiPanel = document.getElementById('aiPanel');
+  aiFab?.addEventListener('click', () => aiPanel.classList.toggle('open'));
+  document.getElementById('aiShopLink')?.addEventListener('click', (e) => {
+    e.preventDefault(); aiPanel.classList.remove('open');
+    document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+  });
+  document.addEventListener('click', (e) => {
+    if (aiFab && aiPanel && !aiFab.contains(e.target) && !aiPanel.contains(e.target)) aiPanel.classList.remove('open');
+  });
+
+  // Scroll animations
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('visible'); });
+  }, { threshold: 0.07 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  (async () => {
+    try { await loadCatalog(); } catch (e) { console.warn(e); }
+    renderProducts();
+    updateCartUI();
+  })();
+</script>
+</body>
+</html>

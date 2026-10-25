@@ -1,0 +1,3048 @@
+{
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  },
+  "description": "Mobile Express",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "gather_walcome",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_1",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/new_main",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 340,
+          "y": 0
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_1",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_walcome",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_items",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_walcome.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "gather_sim_manu",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_walcome.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "gather_lookup_method",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_walcome.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "say_play_terms",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.gather_walcome.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "gather_buy_sim",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{widgets.gather_walcome.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "next": "gather_assistence_method",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 6",
+              "arguments": [
+                "{{widgets.gather_walcome.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "6"
+            }
+          ]
+        },
+        {
+          "next": "gather_specials",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 7",
+              "arguments": [
+                "{{widgets.gather_walcome.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "next": "connect_call_2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 9",
+              "arguments": [
+                "{{widgets.gather_walcome.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "9"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_walcome.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_walcome.Digits}}",
+        "offset": {
+          "x": 680,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "gather_items",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_star_gather_items",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_items",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "say": "",
+        "language": "en-US",
+        "number_of_digits": 2,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 680,
+          "y": -3000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_star_gather_items",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_variables_5",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_items.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_items.Digits}}",
+        "offset": {
+          "x": 1020,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "gather_else_1",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_2",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_else_1",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/to%20add%20another%20phone.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 2040,
+          "y": -3000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_2",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_else_1",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_more_phones",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_else_1.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "gather_acc_manu",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_else_1.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "calculate",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_else_1.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_else_1.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_else_1.Digits}}",
+        "offset": {
+          "x": 2380,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "calculate",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "gather_confirm_total",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZScfc0aefc9805d10685033df5d7667992",
+        "environment_sid": "ZE41cc0b3c23586d6cc276e9395c2f1b9d",
+        "offset": {
+          "x": 7140,
+          "y": -3000
+        },
+        "function_sid": "ZH4d531bb767ca2af2e477e2f3429bf419",
+        "parameters": [
+          {
+            "value": "{{flow.variables.items}}",
+            "key": "items"
+          },
+          {
+            "value": "{{flow.variables.acc}}",
+            "key": "accessories"
+          },
+          {
+            "value": "{{widgets.gather_num_of_sims.Digits}}",
+            "key": "sims"
+          },
+          {
+            "value": "{{flow.variables.mode}}",
+            "key": "item_modes"
+          }
+        ],
+        "url": "https://chatgpt-7837.twil.io/phones_total"
+      }
+    },
+    {
+      "name": "gather_confirm_total",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_3",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_confirm_total",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 7480,
+          "y": -3000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "{{widgets.calculate.parsed.order_message}}, to continue press 1, to go back to the main manu press 2.",
+        "language": "en-US",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_3",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_walcome",
+          "event": "noMatch"
+        },
+        {
+          "next": "record_name_and_address",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_confirm_total.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_confirm_total.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_confirm_total.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_confirm_total.Digits}}",
+        "offset": {
+          "x": 7820,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "pay_1",
+      "type": "capture-payments",
+      "transitions": [
+        {
+          "next": "place_order",
+          "event": "success"
+        },
+        {
+          "event": "maxFailedAttempts"
+        },
+        {
+          "next": "say_play_1",
+          "event": "providerError"
+        },
+        {
+          "next": "say_play_1",
+          "event": "payInterrupted"
+        },
+        {
+          "next": "say_play_1",
+          "event": "hangup"
+        },
+        {
+          "next": "say_play_1",
+          "event": "validationError"
+        }
+      ],
+      "properties": {
+        "security_code": true,
+        "offset": {
+          "x": 9860,
+          "y": -3000
+        },
+        "max_attempts": 3,
+        "payment_connector": "Stripe_Connector_3",
+        "payment_amount": "{{widgets.calculate.parsed.pay_total}}",
+        "description": "Connectivity service",
+        "currency": "usd",
+        "language": "en-US",
+        "postal_code": "false",
+        "payment_token_type": "one-time",
+        "timeout": 13,
+        "valid_card_types": [
+          "visa",
+          "master-card",
+          "amex",
+          "maestro",
+          "discover",
+          "optima",
+          "jcb",
+          "diners-club",
+          "enroute"
+        ]
+      }
+    },
+    {
+      "name": "say_play_1",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "pay_1",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 9860,
+          "y": -2600
+        },
+        "loop": 1,
+        "say": "there was an erorr charging your card, please try again."
+      }
+    },
+    {
+      "name": "place_order",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_7",
+          "event": "success"
+        },
+        {
+          "next": "faild_order",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZScfc0aefc9805d10685033df5d7667992",
+        "environment_sid": "ZE41cc0b3c23586d6cc276e9395c2f1b9d",
+        "offset": {
+          "x": 10200,
+          "y": -3000
+        },
+        "function_sid": "ZH93a9646828eddc63f2d0e86f20aebb64",
+        "parameters": [
+          {
+            "value": "{{trigger.call.From}}",
+            "key": "phone"
+          },
+          {
+            "value": "{{widgets.calculate.parsed.order_description}}",
+            "key": "details"
+          },
+          {
+            "value": "{{widgets.calculate.parsed.subtotal}}",
+            "key": "subtotal"
+          },
+          {
+            "value": "{{widgets.calculate.parsed.tax}}",
+            "key": "tax"
+          },
+          {
+            "value": "{{widgets.calculate.parsed.pay_total}}",
+            "key": "total"
+          },
+          {
+            "value": "{{widgets.pay_1.PaymentConfirmationCode}}",
+            "key": "payment"
+          },
+          {
+            "value": "{{widgets.transcribe_address.parsed.transcription}}",
+            "key": "address"
+          }
+        ],
+        "url": "https://chatgpt-7837.twil.io/place_order"
+      }
+    },
+    {
+      "name": "gather_more_acc",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_star_gather_more_acc",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_more_acc",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/cases",
+        "number_of_digits": 2,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 5440,
+          "y": 0
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_star_gather_more_acc",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_variables_8",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_more_acc.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_more_acc.Digits}}",
+        "offset": {
+          "x": 5780,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "gather_sim_manu",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_4",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_sim_manu",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/travel_sim_menu",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 680,
+          "y": -2400
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_4",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_walcome",
+          "event": "noMatch"
+        },
+        {
+          "next": "run_subflow_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_sim_manu.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "set_variables_12",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_sim_manu.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "gather_num_of_sims",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_sim_manu.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "say_play_11",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.gather_sim_manu.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_sim_manu.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_sim_manu.Digits}}",
+        "offset": {
+          "x": 1020,
+          "y": -2400
+        }
+      }
+    },
+    {
+      "name": "record_voicemail_1",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "transcribe_address",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "transcribe": false,
+        "offset": {
+          "x": 8500,
+          "y": -3000
+        },
+        "trim": "trim-silence",
+        "play_beep": "true",
+        "finish_on_key": "#",
+        "timeout": 5,
+        "max_length": 3600
+      }
+    },
+    {
+      "name": "record_name_and_address",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "record_voicemail_1",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/please_record_name",
+        "offset": {
+          "x": 8160,
+          "y": -3000
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "run_subflow_1",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "gather_walcome",
+          "event": "completed"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "FW56c8fbe176cf1cdd04758af840c1d898",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 1360,
+          "y": -2400
+        }
+      }
+    },
+    {
+      "name": "gather_lookup_method",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_5",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_lookup_method",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/lookup_method",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 680,
+          "y": -1800
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_5",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_lookup_method",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_variables_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_lookup_method.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "gather_lookup_number",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_lookup_method.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_lookup_method.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_lookup_method.Digits}}",
+        "offset": {
+          "x": 1020,
+          "y": -1800
+        }
+      }
+    },
+    {
+      "name": "http_1",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_6",
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2720,
+          "y": -1800
+        },
+        "method": "GET",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.variables.phone}}",
+            "key": "phone"
+          }
+        ],
+        "url": "https://mobileexpressny.com/.netlify/functions/order_status"
+      }
+    },
+    {
+      "name": "set_variables_1",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "http_1",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{trigger.call.From}}",
+            "key": "phone"
+          }
+        ],
+        "offset": {
+          "x": 1360,
+          "y": -1800
+        }
+      }
+    },
+    {
+      "name": "set_variables_2",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "http_1",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "1{{widgets.gather_lookup_number.Digits}}",
+            "key": "phone"
+          }
+        ],
+        "offset": {
+          "x": 2380,
+          "y": -1800
+        }
+      }
+    },
+    {
+      "name": "gather_lookup_number",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_star_gather_lookup_number",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_lookup_number",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/enter_mobile_number",
+        "number_of_digits": 10,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 1700,
+          "y": -1800
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 15
+      }
+    },
+    {
+      "name": "split_star_gather_lookup_number",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_variables_2",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_lookup_number.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_lookup_number.Digits}}",
+        "offset": {
+          "x": 2040,
+          "y": -1800
+        }
+      }
+    },
+    {
+      "name": "split_6",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "say_play_3",
+          "event": "noMatch"
+        },
+        {
+          "next": "say_play_2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{widgets.http_1.parsed.found}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.http_1.parsed.found}}",
+        "offset": {
+          "x": 3060,
+          "y": -1800
+        }
+      }
+    },
+    {
+      "name": "say_play_2",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_walcome",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 3400,
+          "y": -1800
+        },
+        "loop": 1,
+        "say": "Your order for {{widgets.http_1.parsed.details}} \nin the amount of {{widgets.http_1.parsed.total}} \n:\n {{widgets.http_1.parsed.status}}."
+      }
+    },
+    {
+      "name": "say_play_3",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 3740,
+          "y": -1800
+        },
+        "loop": 1,
+        "say": "We are temporarily unable to retrieve your order status. Please try again later. thank you."
+      }
+    },
+    {
+      "name": "say_play_4",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_walcome",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/order_success",
+        "offset": {
+          "x": 11220,
+          "y": -3000
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "split_7",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "faild_order",
+          "event": "noMatch"
+        },
+        {
+          "next": "say_play_10",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{widgets.place_order.parsed.ok}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.place_order.parsed.ok}}",
+        "offset": {
+          "x": 10540,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "faild_order",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "say_play_4",
+          "event": "success"
+        },
+        {
+          "next": "connect_call_1",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZScfc0aefc9805d10685033df5d7667992",
+        "environment_sid": "ZE41cc0b3c23586d6cc276e9395c2f1b9d",
+        "offset": {
+          "x": 10540,
+          "y": -2600
+        },
+        "function_sid": "ZH653ddea45503e1638a872290da01dd2b",
+        "parameters": [
+          {
+            "value": "{{trigger.call.From}}",
+            "key": "phone"
+          },
+          {
+            "value": "{{widgets.record_voicemail_1.RecordingUrl}}",
+            "key": "recording_url"
+          }
+        ],
+        "url": "https://chatgpt-7837.twil.io/assistance"
+      }
+    },
+    {
+      "name": "record_voicemail_2",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "function_2",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "transcribe": false,
+        "offset": {
+          "x": 3060,
+          "y": 600
+        },
+        "trim": "trim-silence",
+        "play_beep": "true",
+        "finish_on_key": "#",
+        "timeout": 5,
+        "max_length": 3600
+      }
+    },
+    {
+      "name": "say_play_5",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "record_voicemail_2",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/record_call_reason",
+        "offset": {
+          "x": 2720,
+          "y": 600
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "gather_assistence_method",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_8",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_assistence_method",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/support_menu",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 680,
+          "y": 600
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_8",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_assistence_method",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_variables_3",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_assistence_method.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "gather_2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_assistence_method.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_assistence_method.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_assistence_method.Digits}}",
+        "offset": {
+          "x": 1020,
+          "y": 600
+        }
+      }
+    },
+    {
+      "name": "set_variables_3",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "say_play_5",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{trigger.call.From}}",
+            "key": "phone_number"
+          }
+        ],
+        "offset": {
+          "x": 1360,
+          "y": 600
+        }
+      }
+    },
+    {
+      "name": "gather_2",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_star_gather_2",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_2",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "number_of_digits": 10,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 1700,
+          "y": 600
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "please enter a 10 digit callbeck number.",
+        "language": "en-US",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_star_gather_2",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_variables_4",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_2.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_2.Digits}}",
+        "offset": {
+          "x": 2040,
+          "y": 600
+        }
+      }
+    },
+    {
+      "name": "set_variables_4",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "say_play_5",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{widgets.gather_2.Digits}}",
+            "key": "phone_number"
+          }
+        ],
+        "offset": {
+          "x": 2380,
+          "y": 600
+        }
+      }
+    },
+    {
+      "name": "function_2",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "say_play_6",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZScfc0aefc9805d10685033df5d7667992",
+        "environment_sid": "ZE41cc0b3c23586d6cc276e9395c2f1b9d",
+        "offset": {
+          "x": 3400,
+          "y": 600
+        },
+        "function_sid": "ZH653ddea45503e1638a872290da01dd2b",
+        "parameters": [
+          {
+            "value": "{{flow.variables.phone_number}}",
+            "key": "phone"
+          },
+          {
+            "value": "{{widgets.record_voicemail_2.RecordingUrl}}",
+            "key": "recording_url"
+          }
+        ],
+        "url": "https://chatgpt-7837.twil.io/assistance"
+      }
+    },
+    {
+      "name": "set_variables_5",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_13",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{widgets.gather_items.Digits}}",
+            "key": "items"
+          }
+        ],
+        "offset": {
+          "x": 1360,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "gather_more_phones",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_star_gather_more_phones",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_more_phones",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "say": "",
+        "language": "en-US",
+        "number_of_digits": 2,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 2720,
+          "y": -3000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_star_gather_more_phones",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_variables_6",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_more_phones.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_more_phones.Digits}}",
+        "offset": {
+          "x": 3060,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "say_play_6",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_walcome",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/call_confirmation",
+        "offset": {
+          "x": 3740,
+          "y": 600
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "set_variables_6",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_12",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{widgets.gather_items.Digits}} , {{widgets.gather_more_phones.Digits}}",
+            "key": "items"
+          }
+        ],
+        "offset": {
+          "x": 3400,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "gather_acc_manu",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_9",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_acc_manu",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/for_phone_cases_press",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 4760,
+          "y": -3000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "say_play_terms",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_walcome",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/terms",
+        "offset": {
+          "x": 680,
+          "y": -1200
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "split_9",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_acc_manu",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_cases",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_acc_manu.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "gather_other_acc",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_acc_manu.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_acc_manu.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_acc_manu.Digits}}",
+        "offset": {
+          "x": 5100,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "gather_cases",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_star_gather_cases",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_cases",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/cases",
+        "number_of_digits": 2,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 5440,
+          "y": -3000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_star_gather_cases",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_variables_7",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_cases.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_cases.Digits}}",
+        "offset": {
+          "x": 5780,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "gather_other_acc",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_star_gather_other_acc",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_other_acc",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "speech_timeout": "5",
+        "offset": {
+          "x": 3740,
+          "y": 520
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "this option will be updated later.",
+        "language": "en-US",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_star_gather_other_acc",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_other_acc",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_other_acc.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_other_acc.Digits}}",
+        "offset": {
+          "x": 4080,
+          "y": 340
+        }
+      }
+    },
+    {
+      "name": "set_variables_7",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_if_add_more",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{widgets.gather_cases.Digits}}",
+            "key": "acc"
+          }
+        ],
+        "offset": {
+          "x": 6120,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "gather_if_add_more",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_10",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_if_add_more",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 6460,
+          "y": -3000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "to add more, press 1. to perceed to checkout, press 2.",
+        "language": "en-US",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_10",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_more_acc",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_if_add_more.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_if_add_more.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_if_add_more.Digits}}",
+        "offset": {
+          "x": 6800,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "set_variables_8",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{widgets.gather_cases.Digits}} , {{widgets.gather_more_acc.Digits}}",
+            "key": "acc"
+          }
+        ],
+        "offset": {
+          "x": 6120,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "gather_num_of_sims",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_11",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_num_of_sims",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/buy_sim_menu",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 2040,
+          "y": -2400
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_11",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "noMatch"
+        },
+        {
+          "next": "connect_call_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.gather_num_of_sims.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_num_of_sims.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_num_of_sims.Digits}}",
+        "offset": {
+          "x": 2380,
+          "y": -2400
+        }
+      }
+    },
+    {
+      "name": "connect_call_1",
+      "type": "connect-call-to",
+      "transitions": [
+        {
+          "event": "callCompleted"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 3060,
+          "y": -2400
+        },
+        "caller_id": "{{contact.channel.address}}",
+        "noun": "number",
+        "to": "+18456370687",
+        "timeout": 30
+      }
+    },
+    {
+      "name": "split_12",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "Copy_of_gather_mode",
+          "event": "noMatch"
+        },
+        {
+          "next": "Copy_of_gather_else_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_more_phones.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_more_phones.Digits}}",
+        "offset": {
+          "x": 3740,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "split_13",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_mode",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_else_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_items.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_items.Digits}}",
+        "offset": {
+          "x": 1700,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "Copy_of_gather_else_1",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_14",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "Copy_of_gather_else_1",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 4080,
+          "y": -3000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "to add accessories press 1. to precede to checkout press 2.",
+        "language": "en-US",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_14",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_acc_manu",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.Copy_of_gather_else_1.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.Copy_of_gather_else_1.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.Copy_of_gather_else_1.Digits}}",
+        "offset": {
+          "x": 4420,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "say_play_10",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "say_play_4",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/magical-hit-45356.mp3",
+        "offset": {
+          "x": 10880,
+          "y": -3000
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "say_play_11",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_sim_manu",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/interduction_sim",
+        "offset": {
+          "x": 1700,
+          "y": -2400
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "sim_details",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_walcome",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/plan_details",
+        "offset": {
+          "x": 1700,
+          "y": -600
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "gather_mode",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_star_gather_mode",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_mode",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/if_text",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 2380,
+          "y": 1200
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_star_gather_mode",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_variables_9",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_mode.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_mode.Digits}}",
+        "offset": {
+          "x": 2720,
+          "y": 840
+        }
+      }
+    },
+    {
+      "name": "set_variables_9",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_else_1",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{widgets.gather_mode.Digits}}",
+            "key": "mode"
+          }
+        ],
+        "offset": {
+          "x": 3060,
+          "y": 680
+        }
+      }
+    },
+    {
+      "name": "Copy_of_gather_mode",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_star_Copy_of_gather_mode",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "Copy_of_gather_mode",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/if_text",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 4420,
+          "y": 680
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_star_Copy_of_gather_mode",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_variables_10",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.Copy_of_gather_mode.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.Copy_of_gather_mode.Digits}}",
+        "offset": {
+          "x": 4760,
+          "y": 680
+        }
+      }
+    },
+    {
+      "name": "set_variables_10",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_acc_manu",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{flow.variables.mode}},\n{{widgets.Copy_of_gather_mode.Digits}}",
+            "key": "mode"
+          }
+        ],
+        "offset": {
+          "x": 5100,
+          "y": 160
+        }
+      }
+    },
+    {
+      "name": "connect_call_2",
+      "type": "connect-call-to",
+      "transitions": [
+        {
+          "event": "callCompleted"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 680,
+          "y": 1800
+        },
+        "caller_id": "{{contact.channel.address}}",
+        "noun": "number",
+        "to": "+18456820928",
+        "timeout": 30
+      }
+    },
+    {
+      "name": "set_variables_11",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "16",
+            "key": "items"
+          }
+        ],
+        "offset": {
+          "x": 1360,
+          "y": -600
+        }
+      }
+    },
+    {
+      "name": "gather_buy_sim",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_15",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_buy_sim",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://chatgpt-7837.twil.io/buy_sim_menu_1",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 680,
+          "y": -600
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_15",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_buy_sim",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_variables_11",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_buy_sim.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "sim_details",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_buy_sim.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_buy_sim.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_buy_sim.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_buy_sim.Digits}}",
+        "offset": {
+          "x": 1020,
+          "y": -600
+        }
+      }
+    },
+    {
+      "name": "set_variables_12",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "17",
+            "key": "items"
+          }
+        ],
+        "offset": {
+          "x": 2720,
+          "y": -2400
+        }
+      }
+    },
+    {
+      "name": "split_16",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_walcome",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_variables_13",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_specials.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "set_variables_14",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_specials.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "set_variables_15",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_specials.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "set_variables_16",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.gather_specials.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "set_variables_17",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{widgets.gather_specials.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "next": "gather_walcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_specials.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_specials.Digits}}",
+        "offset": {
+          "x": 1020,
+          "y": 1200
+        }
+      }
+    },
+    {
+      "name": "gather_specials",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_16",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_specials",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "speech_timeout": "5",
+        "offset": {
+          "x": 680,
+          "y": 1200
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "",
+        "language": "en-US",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "set_variables_13",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "5",
+            "key": "items"
+          }
+        ],
+        "offset": {
+          "x": 1360,
+          "y": 1200
+        }
+      }
+    },
+    {
+      "name": "set_variables_14",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "6",
+            "key": "items"
+          }
+        ],
+        "offset": {
+          "x": 1700,
+          "y": 1200
+        }
+      }
+    },
+    {
+      "name": "set_variables_15",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "10",
+            "key": "items"
+          }
+        ],
+        "offset": {
+          "x": 2040,
+          "y": 1200
+        }
+      }
+    },
+    {
+      "name": "set_variables_16",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "11",
+            "key": "items"
+          }
+        ],
+        "offset": {
+          "x": 2380,
+          "y": 1200
+        }
+      }
+    },
+    {
+      "name": "set_variables_17",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "calculate",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "18",
+            "key": "items"
+          }
+        ],
+        "offset": {
+          "x": 2720,
+          "y": 1200
+        }
+      }
+    },
+    {
+      "name": "transcribe_address",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "gather_confirm_address",
+          "event": "success"
+        },
+        {
+          "next": "say_address_incorrect",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZScfc0aefc9805d10685033df5d7667992",
+        "environment_sid": "ZE41cc0b3c23586d6cc276e9395c2f1b9d",
+        "offset": {
+          "x": 8840,
+          "y": -3000
+        },
+        "function_sid": "ZH86b55d6ea4e85d59d6e5fe07cb57a439",
+        "parameters": [
+          {
+            "value": "{{widgets.record_voicemail_1.RecordingUrl}}",
+            "key": "recording_url"
+          }
+        ],
+        "url": "https://chatgpt-7837.twil.io/transcribe_address"
+      }
+    },
+    {
+      "name": "gather_confirm_address",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_confirm_address",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_confirm_address",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "say": "I heard your address as: {{widgets.transcribe_address.parsed.transcription}}. Press 1 to confirm that is correct, or press 2 if that is incorrect.",
+        "language": "en-US",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 9180,
+          "y": -3000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 8
+      }
+    },
+    {
+      "name": "split_confirm_address",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_confirm_address",
+          "event": "noMatch"
+        },
+        {
+          "next": "pay_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_confirm_address.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "say_address_incorrect",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_confirm_address.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_confirm_address.Digits}}",
+        "offset": {
+          "x": 9520,
+          "y": -3000
+        }
+      }
+    },
+    {
+      "name": "say_address_incorrect",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 9520,
+          "y": -3400
+        },
+        "loop": 1,
+        "say": "No problem. We will send your recording to our customer service team for processing your order. Thank you for calling Mobile Express, goodbye."
+      }
+    }
+  ]
+}

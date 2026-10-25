@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Express NY — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0b1d24; --pine: #0d5c4b; --copper: #f15e2c;
+      --cream: #fef8ef; --mist: #ecf5f2; --stone: #d7e0dc; --charcoal: #1f2b33;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Space Grotesk", "Sora", sans-serif;
+      background: linear-gradient(145deg, #fdfbf7, #f3f8f6);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .logo { margin-bottom: 2rem; text-align: center; }
+    .logo img { height: 3.5rem; width: auto; margin: 0 auto; }
+
+    h1 { font-size: 1.1rem; font-weight: 600; color: rgba(11,29,36,0.5); margin-bottom: 2.5rem; text-align: center; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    .cards { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      width: 220px;
+      padding: 2.5rem 1.5rem;
+      background: #fff;
+      border: 1.5px solid var(--stone);
+      border-radius: 24px;
+      box-shadow: 0 16px 45px rgba(9,23,22,0.07);
+      text-decoration: none;
+      color: var(--ink);
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      cursor: pointer;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 24px 55px rgba(9,23,22,0.12); border-color: var(--pine); }
+    .card:active { transform: translateY(-1px); }
+
+    .card-icon { font-size: 2.4rem; }
+    .card-title { font-size: 1.1rem; font-weight: 700; }
+    .card-sub { font-size: 0.82rem; color: rgba(11,29,36,0.5); text-align: center; line-height: 1.4; }
+
+    .card-website .card-icon { color: var(--pine); }
+    .card-ivr     .card-icon { color: var(--copper); }
+
+    .hint {
+      margin-top: 3rem;
+      font-size: 0.82rem;
+      color: rgba(11,29,36,0.4);
+      text-align: center;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">
+    <img src="images/mobile-express-logo.png" alt="Mobile Express NY">
+  </div>
+
+  <h1>Admin Dashboard</h1>
+
+  <div class="cards">
+    <a href="admin.html" class="card card-website">
+      <div class="card-icon">🛍️</div>
+      <div class="card-title">Edit Website</div>
+      <div class="card-sub">Manage products, prices, and images on the storefront</div>
+    </a>
+    <a href="admin-ivr.html" class="card card-ivr">
+      <div class="card-icon">📞</div>
+      <div class="card-title">Edit IVR</div>
+      <div class="card-sub">Edit phone menu messages and the product catalog for callers</div>
+    </a>
+    <a href="ivr-diagram.html" class="card" style="--accent:#2563eb;">
+      <div class="card-icon">🗺️</div>
+      <div class="card-title">IVR Diagram</div>
+      <div class="card-sub">Visual map of the whole phone flow, step by step</div>
+    </a>
+    <a href="admin-repairs.html" class="card" style="--accent:#0d5c4b;">
+      <div class="card-icon">🔧</div>
+      <div class="card-title">Repair Catalog</div>
+      <div class="card-sub">Manage phone makes, models, and repair prices</div>
+    </a>
+    <a href="process_repairs.html" class="card" style="--accent:#0d5c4b;">
+      <div class="card-icon">🛠️</div>
+      <div class="card-title">Process Repairs</div>
+      <div class="card-sub">View and manage incoming repair requests</div>
+    </a>
+  </div>
+
+  <div class="hint">
+    To publish changes: double-click <strong>PUBLISH.bat</strong> (website) or <strong>PUBLISH-TWILIO.bat</strong> (phone system)
+  </div>
+
+  <style>
+    .login-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(145deg, #fdfbf7, #f3f8f6);
+      display: flex; align-items: center; justify-content: center; z-index: 10000;
+    }
+    .login-box {
+      background: white; padding: 2.5rem; border-radius: 24px;
+      box-shadow: 0 20px 45px rgba(9,23,22,0.1); max-width: 400px; width: 90%;
+    }
+    .login-box h2 { margin-bottom: 1.5rem; color: var(--ink); text-align: center; }
+    .login-box input {
+      width: 100%; padding: 0.8rem 1rem; border: 2px solid var(--stone);
+      border-radius: 12px; margin-bottom: 1rem; font-size: 1rem; font-family: inherit;
+    }
+    .login-box button {
+      width: 100%; padding: 0.8rem 1rem; background: var(--pine); color: white;
+      border: none; border-radius: 12px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s; font-family: inherit;
+    }
+    .login-box button:hover { background: #0a4a3c; }
+    .login-box .error { color: var(--copper); font-size: 0.9rem; margin-top: 0.5rem; text-align: center; min-height: 1.2rem; }
+    .hidden { display: none !important; }
+  </style>
+  <script>
+    const ADMIN_PASSWORD = 'admin123';
+    const loginOverlay = document.createElement('div');
+    loginOverlay.className = 'login-overlay';
+    loginOverlay.innerHTML = `
+      <div class="login-box">
+        <h2>Admin Login</h2>
+        <input type="password" id="adminPassword" placeholder="Enter admin password" />
+        <button onclick="checkPassword()">Login</button>
+        <div class="error" id="loginError"></div>
+      </div>
+    `;
+    document.body.insertBefore(loginOverlay, document.body.firstChild);
+
+    function checkPassword() {
+      const pw = document.getElementById('adminPassword').value;
+      if (pw === ADMIN_PASSWORD) {
+        loginOverlay.classList.add('hidden');
+        sessionStorage.setItem('adminAuthenticated', 'true');
+      } else {
+        document.getElementById('loginError').textContent = 'Incorrect password';
+        document.getElementById('adminPassword').value = '';
+      }
+    }
+
+    if (sessionStorage.getItem('adminAuthenticated') === 'true') {
+      loginOverlay.classList.add('hidden');
+    }
+
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Express NY | Checkout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <script src="components.js" defer></script>
+    <style>
+        :root {
+            --ink: #0b1d24;
+            --pine: #0d5c4b;
+            --copper: #f15e2c;
+            --mist: #ecf5f2;
+            --soft: #fffdf8;
+            --charcoal: #1f2b33;
+            --overlay: rgba(3, 15, 12, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Space Grotesk", "Sora", sans-serif;
+            background: linear-gradient(160deg, #fdfbf7, #f3f8f6);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .top-bar {
+            background: var(--charcoal);
+            color: white;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            text-align: center;
+        }
+
+        .wrap {
+            width: min(1100px, 92vw);
+            margin: 0 auto;
+            padding-bottom: 4rem;
+        }
+
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 1.6rem 0 1.3rem;
+            border-bottom: 1px solid rgba(11, 29, 36, 0.08);
+            flex-wrap: wrap;
+        }
+
+        .brand-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .logo img {
+            display: block;
+            height: 3.5rem;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .brand-tagline {
+            font-size: 0.95rem;
+            color: rgba(11, 29, 36, 0.7);
+        }
+
+        .site-nav .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .site-nav a {
+            text-decoration: none;
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .site-nav a:hover {
+            color: var(--pine);
+        }
+
+        .cart-btn {
+            border: none;
+            border-radius: 999px;
+            background: var(--pine);
+            color: white;
+            padding: 0.8rem 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 12px 24px rgba(13, 92, 75, 0.2);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .summary,
+        .payment {
+            background: var(--soft);
+            border-radius: 24px;
+            padding: 1.5rem;
+        }
+
+        .summary h2,
+        .payment h2 {
+            margin-bottom: 0.8rem;
+            font-size: 1.6rem;
+        }
+
+        .summary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 320px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .line-item {
+            border: 1px solid rgba(11, 29, 36, 0.08);
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .line-item footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .line-item button {
+            border: none;
+            background: transparent;
+            color: var(--copper);
+            cursor: pointer;
+        }
+
+        .totals {
+            border-top: 1px solid rgba(11, 29, 36, 0.08);
+            padding-top: 1rem;
+            display: grid;
+            gap: 0.45rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .total-row.muted {
+            color: rgba(11, 29, 36, 0.72);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .total-row.grand {
+            border-top: 1px solid rgba(11, 29, 36, 0.08);
+            margin-top: 0.25rem;
+            padding-top: 0.7rem;
+        }
+
+        .cta-row {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .ghost-btn,
+        .primary-btn {
+            border-radius: 999px;
+            padding: 0.8rem 1.4rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+
+        .ghost-btn {
+            background: rgba(13, 92, 75, 0.12);
+            color: var(--pine);
+        }
+
+        .primary-btn {
+            background: var(--pine);
+            color: white;
+        }
+
+        .payment form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .payment input,
+        .payment textarea {
+            border: 1px solid rgba(11, 29, 36, 0.15);
+            border-radius: 14px;
+            padding: 0.85rem 1rem;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .address-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.8rem;
+        }
+
+        #card-element {
+            border: 1px solid rgba(11, 29, 36, 0.15);
+            border-radius: 14px;
+            padding: 0.9rem;
+            background: white;
+        }
+
+        .payment button {
+            background: var(--copper);
+            color: white;
+            border: none;
+            border-radius: 999px;
+            padding: 0.95rem 1.4rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            padding: 1rem;
+            border-radius: 16px;
+            background: rgba(13, 92, 75, 0.08);
+            color: var(--pine);
+        }
+
+        .site-footer {
+            margin-top: 3rem;
+            background: var(--charcoal);
+            color: white;
+            padding: 2.5rem 0;
+        }
+
+        .footer-content {
+            width: min(1100px, 92vw);
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.4rem;
+            justify-content: space-between;
+        }
+
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .footer-column a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-column a:hover {
+            color: var(--mint);
+        }
+
+        .footer-copy {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-credit {
+            text-align: center;
+            margin-top: 0.45rem;
+            font-size: 0.85rem;
+        }
+
+        .footer-credit a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.78);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer-credit img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .footer-credit a:hover {
+            color: var(--mint);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="site-header"></div>
+
+        <div class="content">
+            <div class="grid">
+                <section class="summary">
+                    <h2>Your cart</h2>
+                    <div class="summary-list" id="summaryList"></div>
+                    <div class="totals">
+                        <div class="total-row muted">
+                            <span>Subtotal</span>
+                            <strong id="summarySubtotal">$0.00</strong>
+                        </div>
+                        <div class="total-row muted">
+                            <span>Sales tax 8.125%</span>
+                            <strong id="summaryTax">$0.00</strong>
+                        </div>
+                        <div class="total-row grand">
+                            <span>Total</span>
+                            <strong id="summaryTotal">$0.00</strong>
+                        </div>
+                    </div>
+                    <div class="cta-row">
+                        <button class="ghost-btn" id="clearCart">Clear cart</button>
+                        <button class="primary-btn" onclick="window.location.href='index.html'">Add more items</button>
+                    </div>
+                </section>
+
+                <section class="payment">
+                    <h2>Billing & shipping</h2>
+                    <form id="checkoutForm">
+                        <input type="text" name="name" placeholder="Full name" required>
+                        <input type="tel" id="phone" name="phone" placeholder="Phone number for order tracking" required>
+                        <input type="email" name="email" placeholder="Email for receipts" required>
+                        <input type="text" id="address" name="address" placeholder="Street address" autocomplete="shipping address-line1" required>
+                        <input type="text" id="unit" name="unit" placeholder="Apt, suite, unit (optional)" autocomplete="shipping address-line2">
+                        <div class="address-grid">
+                            <input type="text" id="city" name="city" placeholder="City" autocomplete="shipping address-level2" required>
+                            <input type="text" id="state" name="state" placeholder="State" autocomplete="shipping address-level1" required>
+                            <input type="text" id="postal" name="postal" placeholder="Postal code" autocomplete="shipping postal-code" required>
+                            <input type="text" id="country" name="country" placeholder="Country" autocomplete="shipping country" required>
+                        </div>
+                        <div id="card-element" aria-label="Credit or debit card input"></div>
+                        <button type="submit">Pay with Stripe</button>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div id="site-footer"></div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        const SALES_TAX_RATE = 0.08125;
+        const TYPE_LABELS = { phone: 'Device', case: 'Case', accessory: 'Accessory', tablet: 'Tablet', plan: 'Plan', other: 'Other' };
+        const summaryList = document.getElementById('summaryList');
+        const summarySubtotal = document.getElementById('summarySubtotal');
+        const summaryTax = document.getElementById('summaryTax');
+        const summaryTotal = document.getElementById('summaryTotal');
+        const clearCartBtn = document.getElementById('clearCart');
+        const checkoutForm = document.getElementById('checkoutForm');
+        const payButton = checkoutForm.querySelector('button[type="submit"]');
+        const statusBanner = document.createElement('p');
+        statusBanner.style.marginTop = '0.6rem';
+        checkoutForm.appendChild(statusBanner);
+        const addressFields = {
+            line1: document.getElementById('address'),
+            line2: document.getElementById('unit'),
+            city: document.getElementById('city'),
+            state: document.getElementById('state'),
+            postal: document.getElementById('postal'),
+            country: document.getElementById('country')
+        };
+
+        const loadCart = () => {
+            try {
+                const saved = JSON.parse(localStorage.getItem('me_cart'));
+                return Array.isArray(saved) ? saved : [];
+            } catch (error) {
+                console.warn('Unable to load cart from storage', error);
+                return [];
+            }
+        };
+
+        const cart = loadCart();
+        const getItemPrice = (item) => Number(item.price);
+        const getItemQuantity = (item) => Number(item.quantity || 1);
+        const getCartTotal = () => cart.reduce((sum, item) => {
+            const price = getItemPrice(item);
+            const quantity = getItemQuantity(item);
+            return Number.isFinite(price) && Number.isFinite(quantity) ? sum + price * quantity : sum;
+        }, 0);
+        const getSalesTax = (subtotal) => subtotal * SALES_TAX_RATE;
+        const getOrderTotal = (subtotal) => subtotal + getSalesTax(subtotal);
+
+        const renderCart = () => {
+            if (!cart.length) {
+                summaryList.innerHTML = '<div class="empty-state">Your cart is empty. Add devices or accessories to continue.</div>';
+                summarySubtotal.textContent = '$0.00';
+                summaryTax.textContent = '$0.00';
+                summaryTotal.textContent = '$0.00';
+                return;
+            }
+
+            summaryList.innerHTML = cart.map(item => `
+                <div class="line-item">
+                    <strong>${item.name}</strong>
+                    <small>${[TYPE_LABELS[item.type] || (item.type === 'phone' ? 'Device' : 'Accessory'), item.plan ? item.plan : null, `Qty ${item.quantity}`].filter(Boolean).join(' · ')}</small>
+                    <footer>
+                        <span>$${(getItemPrice(item) * getItemQuantity(item)).toFixed(2)}</span>
+                        <button data-remove="${item.id}" data-type="${item.type}">Remove</button>
+                    </footer>
+                </div>
+            `).join('');
+
+            const subtotal = getCartTotal();
+            const tax = getSalesTax(subtotal);
+            const total = getOrderTotal(subtotal);
+            summarySubtotal.textContent = `$${subtotal.toFixed(2)}`;
+            summaryTax.textContent = `$${tax.toFixed(2)}`;
+            summaryTotal.textContent = `$${total.toFixed(2)}`;
+        };
+
+        const saveCart = () => localStorage.setItem('me_cart', JSON.stringify(cart));
+
+        summaryList.addEventListener('click', (event) => {
+            const removeBtn = event.target.closest('[data-remove]');
+            if (!removeBtn) return;
+            const { remove: id, type } = removeBtn.dataset;
+            const index = cart.findIndex(item => item.id === id && item.type === type);
+            if (index > -1) {
+                cart.splice(index, 1);
+                saveCart();
+                renderCart();
+            }
+        });
+
+        clearCartBtn.addEventListener('click', () => {
+            cart.length = 0;
+            saveCart();
+            renderCart();
+        });
+
+        let stripe = null;
+        let cardElement = null;
+        let confirmedQuoteCents = null;
+
+        const setStatus = (message, isError = false) => {
+            statusBanner.textContent = message;
+            statusBanner.style.color = isError ? '#c72c41' : '#0d5c4b';
+        };
+
+        const readJson = async (response) => {
+            try { return await response.json(); }
+            catch { return {}; }
+        };
+
+        const cartPayload = () => cart.map(item => ({
+            id: item.id,
+            variant: item.variant || null,
+            plan: item.plan || null,
+            quantity: Number(item.quantity || 1)
+        }));
+
+        const applyServerTotals = (quote) => {
+            summarySubtotal.textContent = `$${quote.subtotal}`;
+            summaryTax.textContent = `$${quote.tax}`;
+            summaryTotal.textContent = `$${quote.total}`;
+        };
+
+        const createPaymentIntent = async (email) => {
+            const response = await fetch('/.netlify/functions/create-payment-intent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ items: cartPayload(), email })
+            });
+            const data = await readJson(response);
+            if (!response.ok || !data.clientSecret) {
+                throw new Error(data.error || 'Unable to create payment intent');
+            }
+            return data;
+        };
+
+        checkoutForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!cart.length) {
+                setStatus('Add items before checking out.', true);
+                return;
+            }
+
+            const formData = new FormData(checkoutForm);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const phone = formData.get('phone');
+            const addressLine = addressFields.line1.value.trim();
+            const unit = addressFields.line2.value.trim();
+            const city = addressFields.city.value.trim();
+            const state = addressFields.state.value.trim();
+            const postal = addressFields.postal.value.trim();
+            const country = addressFields.country.value.trim();
+            const subtotal = getCartTotal();
+            const total = getOrderTotal(subtotal);
+            const displayedCents = Math.round(total * 100);
+            if (!Number.isInteger(displayedCents) || displayedCents <= 0) {
+                setStatus('Your cart total is invalid. Please remove the item and add it again.', true);
+                return;
+            }
+            if (!stripe || !cardElement) {
+                setStatus('Card payments are not ready yet.', true);
+                return;
+            }
+
+            payButton.disabled = true;
+            payButton.textContent = 'Processing...';
+            setStatus('Creating secure payment...');
+
+            let chargedId = null;
+            try {
+                const quote = await createPaymentIntent(email);
+                applyServerTotals(quote);
+                if (confirmedQuoteCents !== quote.amount && displayedCents !== quote.amount) {
+                    confirmedQuoteCents = quote.amount;
+                    setStatus(`The current total is $${quote.total}. Review it, then press pay again.`, true);
+                    payButton.disabled = false;
+                    payButton.textContent = 'Pay with Stripe';
+                    return;
+                }
+                confirmedQuoteCents = quote.amount;
+
+                const result = await stripe.confirmCardPayment(quote.clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: {
+                            name,
+                            email,
+                        }
+                    },
+                    shipping: {
+                        name,
+                        address: {
+                            line1: addressLine,
+                            line2: unit || undefined,
+                            city,
+                            state,
+                            postal_code: postal,
+                            country
+                        }
+                    }
+                });
+
+                if (result.error) {
+                    setStatus(result.error.message || 'Payment failed.', true);
+                    payButton.disabled = false;
+                    payButton.textContent = 'Pay with Stripe';
+                    return;
+                }
+                if (!result.paymentIntent || result.paymentIntent.status !== 'succeeded') {
+                    throw new Error('Payment was not completed.');
+                }
+                chargedId = result.paymentIntent.id;
+
+                setStatus('Payment successful. Saving your order...');
+                const fullAddress = [addressLine, unit, `${city}, ${state} ${postal}`, country].filter(Boolean).join(', ');
+
+                await sendOrderToNetlify({
+                    name,
+                    phone,
+                    email,
+                    items: cart.map(item => ({
+                        id: item.id,
+                        variant: item.variant || null,
+                        plan: item.plan || null,
+                        quantity: Number(item.quantity || 1),
+                        image: (() => { try { return item.image ? new URL(item.image, window.location.href).href : ''; } catch { return ''; } })(),
+                        link: `${window.location.origin}/detail.html?id=${encodeURIComponent(item.id)}&type=${encodeURIComponent(item.type)}`
+                    })),
+                    payment: chargedId,
+                    address: fullAddress,
+                    street: [addressLine, unit].filter(Boolean).join(', '),
+                    city,
+                    state,
+                    zip: postal,
+                    subtotal: quote.subtotal,
+                    tax: quote.tax,
+                    total: quote.total
+                });
+            } catch (error) {
+                console.error(error);
+                if (chargedId) {
+                    setStatus(`Your card was charged (reference ${chargedId}), but the order was not saved. Contact support and do not pay again. ${error.message || ''}`.trim(), true);
+                    payButton.disabled = true;
+                    payButton.textContent = 'Contact support';
+                    return;
+                }
+                setStatus(error.message || 'Something went wrong creating your payment. Please try again.', true);
+                payButton.disabled = false;
+                payButton.textContent = 'Pay with Stripe';
+            }
+        });
+
+        const sendOrderToNetlify = async (orderData) => {
+            const response = await fetch('/.netlify/functions/place_order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+            const result = await readJson(response);
+            if (!response.ok || !result.ok || !result.orderNumber) {
+                throw new Error(result.error || 'The order could not be saved.');
+            }
+
+            sessionStorage.setItem('me_last_order', JSON.stringify({
+                orderNumber: result.orderNumber,
+                name: orderData.name,
+                email: orderData.email,
+                phone: orderData.phone,
+                address: orderData.address,
+                items: orderData.items.map((item, i) => ({
+                    ...cart[i],
+                    image: item.image
+                })),
+                subtotal: orderData.subtotal,
+                tax: orderData.tax,
+                total: orderData.total
+            }));
+            cart.length = 0;
+            saveCart();
+            window.location.href = 'order-success.html';
+        };
+
+        payButton.disabled = true;
+        (async () => {
+            try {
+                const response = await fetch('/.netlify/functions/stripe-config');
+                const data = await readJson(response);
+                if (!response.ok || !data.publishableKey) {
+                    throw new Error(data.error || 'Card payments are not configured.');
+                }
+                stripe = Stripe(data.publishableKey);
+                cardElement = stripe.elements().create('card');
+                cardElement.mount('#card-element');
+                payButton.disabled = false;
+            } catch (error) {
+                setStatus(error.message || 'Card payments are not configured.', true);
+            }
+        })();
+
+        const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
+        renderCart();
+    </script>
+    <script>
+        function initAddressAutocomplete() {
+            if (window.__mePlacesInitialized) return;
+            if (!window.google || !google.maps?.places) return;
+            const input = document.getElementById('address');
+            if (!input) return;
+
+            window.__mePlacesInitialized = true;
+            const autocomplete = new google.maps.places.Autocomplete(input, {
+                types: ['address'],
+                fields: ['address_components', 'formatted_address']
+            });
+            let addressSessionToken = null;
+
+            const startAddressSession = () => {
+                if (addressSessionToken || !google.maps.places.AutocompleteSessionToken) return;
+                addressSessionToken = new google.maps.places.AutocompleteSessionToken();
+                autocomplete.setOptions({ sessionToken: addressSessionToken });
+            };
+
+            const endAddressSession = () => {
+                addressSessionToken = null;
+                autocomplete.setOptions({ sessionToken: undefined });
+            };
+
+            input.addEventListener('focus', startAddressSession);
+            input.addEventListener('input', startAddressSession);
+            input.addEventListener('blur', () => {
+                window.setTimeout(() => {
+                    if (document.activeElement !== input) endAddressSession();
+                }, 300);
+            });
+
+            autocomplete.addListener('place_changed', () => {
+                const place = autocomplete.getPlace();
+                if (!place.address_components) {
+                    endAddressSession();
+                    return;
+                }
+
+                const componentMap = {
+                    street_number: '',
+                    route: '',
+                    locality: '',
+                    administrative_area_level_1: '',
+                    postal_code: '',
+                    country: ''
+                };
+
+                place.address_components.forEach((component) => {
+                    const type = component.types[0];
+                    if (componentMap[type] !== undefined) {
+                        componentMap[type] = type === 'country' ? component.short_name : component.long_name;
+                    }
+                });
+
+                const street = [componentMap.street_number, componentMap.route].filter(Boolean).join(' ').trim();
+                if (street) addressFields.line1.value = street;
+                if (componentMap.locality) addressFields.city.value = componentMap.locality;
+                if (componentMap.administrative_area_level_1) addressFields.state.value = componentMap.administrative_area_level_1;
+                if (componentMap.postal_code) addressFields.postal.value = componentMap.postal_code;
+                if (componentMap.country) addressFields.country.value = componentMap.country;
+                addressFields.line2.focus();
+                endAddressSession();
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnIDJUIws_Zjpgq5ypGjA4B0dDu9kXXlI&libraries=places&callback=initAddressAutocomplete"
+        async defer></script>
+</body>
+
+</html>

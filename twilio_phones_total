@@ -1,0 +1,189 @@
+/**
+ * Twilio Function: phones_total (the "calculate" widget)
+ * Catalog is managed via admin-ivr.html — do not edit manually.
+ *
+ * Expects one comma-separated list of per-category item numbers for each bucket:
+ *   phones, cases, tablets, travel, local, other
+ * Plus, for phones only:
+ *   phone_modes -> comma-separated plan per phone (1=talk and text, 2=talk and media, 3=talk only)
+ */
+
+const TAX_RATE = 0.08125; // NY sales tax 8.125%
+
+const PHONES  = {
+  "1": {
+    "name": "Wonder Phone",
+    "ser": true,
+    "options": {
+      "1": {
+        "desc_suffix": "talk and text",
+        "price": 399.99
+      },
+      "3": {
+        "desc_suffix": "talk only",
+        "price": 399.99
+      }
+    }
+  },
+  "2": {
+    "name": "Star Phone",
+    "ser": true,
+    "options": {
+      "1": {
+        "desc_suffix": "talk and text",
+        "price": 399.99
+      },
+      "3": {
+        "desc_suffix": "talk only",
+        "price": 399.99
+      }
+    }
+  },
+  "3": {
+    "name": "Kyocera",
+    "price": 199.99,
+    "ser": true
+  }
+};
+const CASES   = {};
+const TABLETS = {};
+const TRAVEL  = {};
+const LOCAL   = {};
+const PLANS   = {};
+const OTHER   = {};
+
+// Single-price buckets: param name -> price table
+const SINGLE_BUCKETS = [
+  { param: 'cases',   table: CASES   },
+  { param: 'tablets', table: TABLETS },
+  { param: 'travel',  table: TRAVEL  },
+  { param: 'local',   table: LOCAL   },
+  { param: 'plans',   table: PLANS   },
+  { param: 'other',   table: OTHER   },
+];
+
+exports.handler = function (context, event, callback) {
+  try {
+    // Empty entries are dropped FIRST so a leading comma from appended flow
+    // variables (e.g. ",1") does not turn into a phantom 0 (Number('') === 0).
+    const parseList = (val) => {
+      if (!val) return [];
+      return String(val).split(/[,\s]+/).map(v => v.trim()).filter(v => v !== '').map(Number).filter(n => Number.isFinite(n));
+    };
+
+    // Plan per phone (1=talk and text, 2=talk and media, 3=talk only), kept aligned with the phones list by dropping blanks.
+    const parseModes = (val) => {
+      if (val == null) return [];
+      return String(val).split(',').map(s => s.trim()).filter(s => s !== '').map(Number).filter(n => Number.isFinite(n));
+    };
+
+    const normalize = s => String(s || '').replace(/\s+/g, ' ').trim();
+    const toCents = n => Math.round((Number(n) + Number.EPSILON) * 100);
+
+    const joinSpeakable = (arr) => {
+      if (arr.length === 0) return '';
+      if (arr.length === 1) return arr[0];
+      if (arr.length === 2) return arr[0] + ' and ' + arr[1];
+      return arr.slice(0, -1).join(', ') + ', and ' + arr[arr.length - 1];
+    };
+
+    const numberToWords = (n) => {
+      const ones = ['zero','one','two','three','four','five','six','seven','eight','nine'];
+      const teens = ['ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+      const tens  = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+      const under100 = x => {
+        if (x < 10) return ones[x];
+        if (x < 20) return teens[x - 10];
+        const t = Math.floor(x / 10), r = x % 10;
+        return r ? tens[t] + ' ' + ones[r] : tens[t];
+      };
+      const under1000 = x => {
+        if (x < 100) return under100(x);
+        const h = Math.floor(x / 100), r = x % 100;
+        return r ? ones[h] + ' hundred ' + under100(r) : ones[h] + ' hundred';
+      };
+      if (n < 1000) return under1000(n);
+      const th = Math.floor(n / 1000), r = n % 1000;
+      return r ? under1000(th) + ' thousand ' + under1000(r) : under1000(th) + ' thousand';
+    };
+
+    const moneyToTTS = cents => {
+      const dollars = Math.floor(cents / 100), rem = cents % 100;
+      return numberToWords(dollars) + ' ' + (dollars === 1 ? 'dollar' : 'dollars') + ' and ' + numberToWords(rem) + ' ' + (rem === 1 ? 'cent' : 'cents');
+    };
+
+    const phoneNums  = parseList(event.phones);
+    const phoneModes = parseModes(event.phone_modes);
+
+    const lines = [];
+    const invalid = [];
+
+    // Phones (with talk-only / talk-and-text plan)
+    phoneNums.forEach((num, idx) => {
+      const def = PHONES[num];
+      if (!def) { invalid.push('phone ' + num); return; }
+      if (def.options) {
+        const mode = phoneModes[idx] || 1;
+        const opt = def.options[mode] || def.options[1];
+        if (!opt) { invalid.push('phone ' + num + ' plan'); return; }
+        const desc = normalize(opt.desc_suffix ? def.name + ' ' + opt.desc_suffix : def.name);
+        lines.push({ category: 'phone', number: num, mode, desc, price: opt.price, price_cents: toCents(opt.price), qty: 1, serialized: !!def.ser });
+      } else {
+        lines.push({ category: 'phone', number: num, mode: null, desc: normalize(def.name), price: def.price, price_cents: toCents(def.price), qty: 1, serialized: !!def.ser });
+      }
+    });
+
+    // Single-price buckets
+    SINGLE_BUCKETS.forEach(({ param, table }) => {
+      parseList(event[param]).forEach(num => {
+        const def = table[num];
+        if (!def) { invalid.push(param + ' ' + num); return; }
+        lines.push({ category: param, number: num, mode: null, desc: normalize(def.name), price: def.price, price_cents: toCents(def.price), qty: 1, serialized: !!def.ser });
+      });
+    });
+
+    if (lines.length === 0) {
+      return callback(null, { ok: false, error: 'No items selected', invalid });
+    }
+    if (invalid.length) {
+      return callback(null, { ok: false, error: 'Invalid selection(s)', invalid });
+    }
+
+    const subtotalCents = lines.reduce((sum, l) => sum + l.price_cents, 0);
+    const taxCents = Math.round(subtotalCents * TAX_RATE);
+    const totalCents = subtotalCents + taxCents;
+
+    const paySubtotal = (subtotalCents / 100).toFixed(2);
+    const payTax = (taxCents / 100).toFixed(2);
+    const payTotal = (totalCents / 100).toFixed(2);
+
+    const orderDescription = joinSpeakable(lines.map(l => 'a ' + l.desc));
+    const ttsSubtotal = moneyToTTS(subtotalCents);
+    const ttsTax = moneyToTTS(taxCents);
+    const ttsTotal = moneyToTTS(totalCents);
+
+    const orderMessage =
+      'Ok, so you want to order ' + orderDescription + '. ' +
+      'Your subtotal is ' + ttsSubtotal + ', ' +
+      'plus ' + ttsTax + ' sales tax, ' +
+      'for a total of ' + ttsTotal + '.';
+
+    const serializedCount = lines.reduce((n, l) => n + (l.serialized ? l.qty : 0), 0);
+
+    return callback(null, {
+      ok: true,
+      order_description: orderDescription,
+      order_message: orderMessage,
+      tts_total: ttsTotal,
+      pay_total: payTotal,
+      pay_total_cents: totalCents,
+      subtotal: paySubtotal,
+      tax: payTax,
+      serialized_count: serializedCount,
+      lines
+    });
+
+  } catch (err) {
+    return callback(null, { ok: false, error: err.message });
+  }
+};

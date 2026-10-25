@@ -1,0 +1,13 @@
+# Dependencies and local tool data
+node_modules/
+.claude/
+
+# Local Netlify folder
+.netlify
+
+# Local Twilio credentials — never commit this file
+twilio-local.json
+
+# New-account setup secrets — never commit this file
+setup-local.json
+airtable-local.json

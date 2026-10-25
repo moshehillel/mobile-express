@@ -1,0 +1,37 @@
+{
+  "airtable": {
+    "token": "",
+    "workspaceId": "",
+    "baseId": "",
+    "ordersTableId": "",
+    "repairsTableId": ""
+  },
+  "twilio": {
+    "accountSid": "",
+    "authToken": "",
+    "serviceSid": "",
+    "environmentSid": "",
+    "flowSid": "",
+    "domain": ""
+  },
+  "netlify": {
+    "siteName": "mobile-express"
+  },
+  "env": {
+    "STRIPE_SECRET_KEY": "",
+    "STRIPE_PUBLISHABLE_KEY": "",
+    "GMAIL_USER": "",
+    "GMAIL_APP_PASS": "",
+    "SELLER_EMAIL": "",
+    "SHIPPO_API_KEY": "",
+    "SENDER_NAME": "Mobile Express NY",
+    "SENDER_STREET": "",
+    "SENDER_CITY": "",
+    "SENDER_STATE": "NY",
+    "SENDER_ZIP": "",
+    "SENDER_PHONE": "",
+    "SENDER_EMAIL": "",
+    "ADMIN_PASSWORD": "",
+    "OPENAI_API_KEY": ""
+  }
+}

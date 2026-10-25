@@ -1,0 +1,204 @@
+/**
+ * Twilio Function: place-order
+ *
+ * Expects params:
+ *   phone   (string)  -> key = phone
+ *   details (string)  -> key = details
+ *   subtotal (string) -> key = subtotal
+ *   tax     (string)  -> key = tax
+ *   total   (string)  -> key = total
+ *   payment (string)  -> key = payment (confirmation)
+ *   address (string)  -> key = address (spoken address, or a recording URL)  OPTIONAL
+ *
+ * Env vars required:
+ *   GMAIL_USER
+ *   GMAIL_APP_PASS
+ *   AIRTABLE_TOKEN
+ *   ACCOUNT_SID
+ *   AUTH_TOKEN
+ */
+
+const https = require("https");
+const nodemailer = require("nodemailer");
+
+const AIRTABLE_BASE_ID = "appTpfiIE7HJNTVEx";
+const AIRTABLE_TABLE_ID = "tblWYJmi6rf9olmdj";
+
+exports.handler = async function (context, event, callback) {
+  try {
+    const phone = (event.phone || "").toString().trim();
+    const details = (event.details || "").toString().trim();
+    const subtotal = (event.subtotal || "").toString().trim();
+    const tax = (event.tax || "").toString().trim();
+    const total = (event.total || "").toString().trim();
+    const payment = (event.payment || "").toString().trim();
+    const address = (event.address || "").toString().trim();
+    const addressIsUrl = /^https?:\/\//i.test(address);
+    const serializedCount = parseInt(event.serialized_count, 10) || 0;
+
+    if (!phone || !details || !total || !payment) {
+      return callback(null, {
+        ok: false,
+        error: "Missing required params. Need: phone, details, total, payment",
+        got: { phone: !!phone, details: !!details, total: !!total, payment: !!payment, address: !!address }
+      });
+    }
+
+    if (!context.AIRTABLE_TOKEN) throw new Error("Missing env var AIRTABLE_TOKEN");
+    if (!context.GMAIL_USER || !context.GMAIL_APP_PASS) throw new Error("Missing env vars GMAIL_USER and/or GMAIL_APP_PASS");
+
+    const now = new Date();
+    const timestamp = now.toLocaleString("en-US", { timeZone: "America/New_York" });
+    const orderNumber = String(Math.floor(100000 + Math.random() * 900000));
+    const status = "Processing";
+
+    const fields = {
+      "Order Number": orderNumber,
+      "Source": "IVR",
+      "Timestamp": timestamp,
+      "Phone": phone,
+      "Details": details,
+      "Subtotal": parseFloat(subtotal) || 0,
+      "Tax": parseFloat(tax) || 0,
+      "Total": parseFloat(total) || 0,
+      "Payment": payment,
+      "Serialized Count": serializedCount,
+      "Status": status,
+    };
+    if (addressIsUrl) fields["Address Recording"] = address;
+    else if (address) fields.Address = address;
+
+    // 1) Write to Airtable
+    await airtablePost(
+      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`,
+      { fields },
+      context.AIRTABLE_TOKEN
+    );
+
+    // 2) Download recording (optional) and attach to email
+    let attachment = null;
+    if (addressIsUrl) {
+      try {
+        const buf = await downloadBinary(address, {
+          basicAuth:
+            looksLikeTwilioRecording(address) && context.ACCOUNT_SID && context.AUTH_TOKEN
+              ? { user: context.ACCOUNT_SID, pass: context.AUTH_TOKEN }
+              : null,
+        });
+        attachment = { filename: guessFilename(address), content: buf };
+      } catch (_) { /* proceed without attachment if download fails */ }
+    }
+
+    // 3) Send email via Gmail SMTP
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: { user: context.GMAIL_USER, pass: context.GMAIL_APP_PASS },
+    });
+
+    await transporter.sendMail({
+      from: context.GMAIL_USER,
+      to: context.GMAIL_USER,
+      subject: `New IVR Order #${orderNumber} - $${total}`,
+      text:
+        `New IVR Order #${orderNumber}\n\n` +
+        `For: ${details}\n` +
+        `Subtotal: $${subtotal}\n` +
+        `Tax: $${tax}\n` +
+        `Total: $${total}\n` +
+        `Customer phone: ${phone}\n` +
+        `Address: ${address || "Not provided"}\n`,
+      attachments: attachment ? [attachment] : [],
+    });
+
+    return callback(null, {
+      ok: true,
+      order_number: orderNumber,
+      status_message: status,
+    });
+  } catch (err) {
+    return callback(null, { ok: false, error: err.message || String(err) });
+  }
+};
+
+// ---------- helpers ----------
+
+function airtablePost(url, data, token) {
+  return new Promise((resolve, reject) => {
+    const u = new URL(url);
+    const body = Buffer.from(JSON.stringify(data), "utf8");
+    const req = https.request(
+      {
+        method: "POST",
+        hostname: u.hostname,
+        path: u.pathname + (u.search || ""),
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": body.length,
+          "Authorization": `Bearer ${token}`,
+        },
+      },
+      (res) => {
+        const chunks = [];
+        res.on("data", (d) => chunks.push(d));
+        res.on("end", () => {
+          const text = Buffer.concat(chunks).toString("utf8");
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            try { resolve(JSON.parse(text)); } catch { resolve(text); }
+          } else {
+            reject(new Error(`Airtable HTTP ${res.statusCode}: ${text}`));
+          }
+        });
+      }
+    );
+    req.on("error", reject);
+    req.write(body);
+    req.end();
+  });
+}
+
+function looksLikeTwilioRecording(url) {
+  const u = url.toLowerCase();
+  return u.includes("api.twilio.com") || u.includes("twilio.com/2010-04-01") || u.includes("/recordings/");
+}
+
+function guessFilename(url) {
+  try {
+    const u = new URL(url);
+    const last = u.pathname.split("/").filter(Boolean).pop() || "address_recording.wav";
+    return last.includes(".") ? last : `${last}.mp3`;
+  } catch {
+    return "address_recording.mp3";
+  }
+}
+
+function downloadBinary(url, opts = {}) {
+  return new Promise((resolve, reject) => {
+    const u = new URL(url);
+    const headers = {};
+    if (opts.basicAuth && opts.basicAuth.user && opts.basicAuth.pass) {
+      const token = Buffer.from(`${opts.basicAuth.user}:${opts.basicAuth.pass}`).toString("base64");
+      headers.Authorization = `Basic ${token}`;
+    }
+    const req = https.request(
+      {
+        method: "GET",
+        hostname: u.hostname,
+        path: u.pathname + (u.search || ""),
+        headers,
+      },
+      (res) => {
+        const chunks = [];
+        res.on("data", (d) => chunks.push(d));
+        res.on("end", () => {
+          const buf = Buffer.concat(chunks);
+          if (res.statusCode >= 200 && res.statusCode < 300) return resolve(buf);
+          return reject(new Error(`Download HTTP ${res.statusCode}: ${buf.toString("utf8")}`));
+        });
+      }
+    );
+    req.on("error", reject);
+    req.end();
+  });
+}

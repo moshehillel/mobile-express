@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Express NY — Repair Catalog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0b1d24; --pine: #0d5c4b; --pine-light: rgba(13,92,75,0.08);
+      --copper: #f15e2c; --bg: #f5f9f7; --surface: #fff;
+      --border: rgba(11,29,36,0.1); --muted: rgba(11,29,36,0.45);
+      --shadow: 0 4px 16px rgba(0,0,0,0.07);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Space Grotesk", sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    /* Top bar */
+    .topbar {
+      background: var(--ink);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.5rem;
+      gap: 1rem;
+    }
+    .topbar a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; }
+    .topbar a:hover { color: #fff; }
+    .topbar h1 { font-size: 1rem; font-weight: 700; }
+    .save-btn {
+      background: var(--pine);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 0.55rem 1.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.2s;
+    }
+    .save-btn:hover { opacity: 0.88; }
+    .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Layout */
+    .panels {
+      display: grid;
+      grid-template-columns: 280px 280px 1fr;
+      height: calc(100vh - 52px);
+    }
+    .panel {
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .panel:last-child { border-right: none; }
+
+    .panel-head {
+      padding: 1rem 1rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      background: var(--surface);
+    }
+    .panel-head h2 { font-size: 0.88rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .panel-head .sel-label { font-size: 0.88rem; font-weight: 600; color: var(--pine); }
+
+    .add-btn {
+      background: var(--pine-light);
+      color: var(--pine);
+      border: 1px solid rgba(13,92,75,0.2);
+      border-radius: 8px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .add-btn:hover { background: rgba(13,92,75,0.15); }
+
+    .panel-body { overflow-y: auto; flex: 1; padding: 0.5rem; }
+
+    /* List items */
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 0.7rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.12s;
+      position: relative;
+    }
+    .list-item:hover { background: var(--pine-light); }
+    .list-item.active { background: var(--pine-light); border: 1px solid rgba(13,92,75,0.25); }
+    .list-item img {
+      width: 40px; height: 40px; object-fit: contain;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: #f8faf9; flex-shrink: 0;
+    }
+    .list-item .item-info { flex: 1; min-width: 0; }
+    .list-item .item-name { font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .list-item .item-sub  { font-size: 0.78rem; color: var(--muted); }
+    .list-item .item-actions { display: none; gap: 0.3rem; flex-shrink: 0; }
+    .list-item:hover .item-actions { display: flex; }
+    .act-btn {
+      background: none; border: none; cursor: pointer; padding: 0.2rem 0.35rem;
+      border-radius: 6px; font-size: 0.8rem; line-height: 1;
+    }
+    .act-btn.edit  { color: var(--pine); }
+    .act-btn.del   { color: var(--copper); }
+    .act-btn:hover { background: rgba(0,0,0,0.06); }
+
+    /* Repair rows (panel 3) */
+    .repair-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      margin-bottom: 0.5rem;
+    }
+    .repair-row .rname { flex: 1; font-weight: 600; font-size: 0.92rem; }
+    .repair-row .rprice { font-weight: 700; color: var(--pine); font-size: 0.95rem; min-width: 60px; text-align: right; }
+    .repair-row .item-actions { display: flex; gap: 0.3rem; }
+
+    .empty-hint {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.8;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(11,29,36,0.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 2rem;
+      width: min(420px, 92vw);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+    }
+    .modal h3 { font-size: 1.1rem; margin-bottom: 1.4rem; }
+    .mfield { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
+    .mfield label { font-size: 0.82rem; font-weight: 600; }
+    .mfield input[type=text],
+    .mfield input[type=number] {
+      border: 1px solid rgba(11,29,36,0.15);
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .mfield input:focus { border-color: var(--pine); }
+
+    .img-preview {
+      width: 80px; height: 80px; object-fit: contain;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: #f8faf9; display: none;
+    }
+    .img-preview.show { display: block; }
+    .upload-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .upload-label {
+      background: var(--pine-light);
+      color: var(--pine);
+      border: 1px dashed rgba(13,92,75,0.3);
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .upload-label:hover { background: rgba(13,92,75,0.14); }
+    input[type=file] { display: none; }
+
+    .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.4rem; justify-content: flex-end; }
+    .mbtn {
+      border: none; border-radius: 999px; padding: 0.6rem 1.3rem;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .mbtn-primary { background: var(--pine); color: #fff; }
+    .mbtn-primary:hover { opacity: 0.88; }
+    .mbtn-cancel  { background: var(--border); color: var(--ink); }
+    .mbtn-cancel:hover { background: rgba(11,29,36,0.15); }
+
+    .toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: #fff; padding: 0.65rem 1.4rem;
+      border-radius: 999px; font-size: 0.88rem; font-weight: 600;
+      opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 200;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 800px) {
+      .panels { grid-template-columns: 1fr; height: auto; }
+      .panel { border-right: none; border-bottom: 1px solid var(--border); max-height: 320px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <a href="admin-home.html">← Admin</a>
+    <h1>Repair Catalog</h1>
+  </div>
+  <button class="save-btn" id="saveBtn">Save Changes</button>
+</div>
+
+<div class="panels">
+
+  <!-- Panel 1: Makes -->
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Phone Makes</h2>
+      <button class="add-btn" id="addMakeBtn">+ Add Make</button>
+    </div>
+    <div class="panel-body" id="makesList"></div>
+  </div>
+
+  <!-- Panel 2: Models -->
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Models</h2>
+      <span class="sel-label" id="selectedMakeLabel">Select a make</span>
+      <button class="add-btn" id="addModelBtn" style="display:none;">+ Add Model</button>
+    </div>
+    <div class="panel-body" id="modelsList"></div>
+  </div>
+
+  <!-- Panel 3: Repairs -->
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Repairs</h2>
+      <span class="sel-label" id="selectedModelLabel">Select a model</span>
+      <button class="add-btn" id="addRepairBtn" style="display:none;">+ Add Repair</button>
+    </div>
+    <div class="panel-body" id="repairsList" style="padding:1rem;"></div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h3 id="modalTitle">Add</h3>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="mbtn mbtn-cancel" id="modalCancel">Cancel</button>
+      <button class="mbtn mbtn-primary" id="modalSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let catalog = { makes: [] };
+  let selectedMakeId  = null;
+  let selectedModelId = null;
+  let dirty = false;
+
+  const uid = () => '_' + Math.random().toString(36).slice(2, 10);
+
+  // ── API ──
+  async function loadCatalog() {
+    const r = await fetch('/api/repairs-catalog');
+    catalog = await r.json();
+    if (!Array.isArray(catalog.makes)) catalog.makes = [];
+    renderMakes();
+  }
+
+  async function saveCatalog() {
+    document.getElementById('saveBtn').disabled = true;
+    document.getElementById('saveBtn').textContent = 'Saving…';
+    try {
+      const r = await fetch('/api/repairs-catalog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(catalog),
+      });
+      const d = await r.json();
+      if (d.ok) { dirty = false; showToast('Saved!'); }
+      else showToast('Error: ' + d.error);
+    } catch (e) { showToast('Save failed'); }
+    document.getElementById('saveBtn').disabled = false;
+    document.getElementById('saveBtn').textContent = 'Save Changes';
+  }
+
+  // ── Render ──
+  function renderMakes() {
+    const el = document.getElementById('makesList');
+    if (!catalog.makes.length) {
+      el.innerHTML = '<div class="empty-hint">No makes yet.<br>Click "+ Add Make" to start.</div>';
+      return;
+    }
+    el.innerHTML = catalog.makes.map(m => `
+      <div class="list-item ${m.id === selectedMakeId ? 'active' : ''}" data-id="${m.id}" onclick="selectMake('${m.id}')">
+        <img src="${m.image || 'images/mobile-express-logo.png'}" alt="${m.name}">
+        <div class="item-info">
+          <div class="item-name">${m.name}</div>
+          <div class="item-sub">${m.models.length} model${m.models.length !== 1 ? 's' : ''}</div>
+        </div>
+        <div class="item-actions">
+          <button class="act-btn edit" onclick="event.stopPropagation();editMake('${m.id}')">✏️</button>
+          <button class="act-btn del"  onclick="event.stopPropagation();deleteMake('${m.id}')">🗑️</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderModels() {
+    const el = document.getElementById('modelsList');
+    const make = catalog.makes.find(m => m.id === selectedMakeId);
+    if (!make) { el.innerHTML = '<div class="empty-hint">Select a make first.</div>'; return; }
+    if (!make.models.length) { el.innerHTML = '<div class="empty-hint">No models yet.<br>Click "+ Add Model".</div>'; return; }
+    el.innerHTML = make.models.map(mod => `
+      <div class="list-item ${mod.id === selectedModelId ? 'active' : ''}" data-id="${mod.id}" onclick="selectModel('${mod.id}')">
+        <img src="${mod.image || 'images/mobile-express-logo.png'}" alt="${mod.name}">
+        <div class="item-info">
+          <div class="item-name">${mod.name}</div>
+          <div class="item-sub">${mod.repairs.length} repair${mod.repairs.length !== 1 ? 's' : ''}</div>
+        </div>
+        <div class="item-actions">
+          <button class="act-btn edit" onclick="event.stopPropagation();editModel('${mod.id}')">✏️</button>
+          <button class="act-btn del"  onclick="event.stopPropagation();deleteModel('${mod.id}')">🗑️</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderRepairs() {
+    const el = document.getElementById('repairsList');
+    const make  = catalog.makes.find(m => m.id === selectedMakeId);
+    const model = make && make.models.find(m => m.id === selectedModelId);
+    if (!model) { el.innerHTML = '<div class="empty-hint">Select a model to see its repairs.</div>'; return; }
+    if (!model.repairs.length) { el.innerHTML = '<div class="empty-hint">No repairs yet.<br>Click "+ Add Repair".</div>'; return; }
+    el.innerHTML = model.repairs.map(r => `
+      <div class="repair-row">
+        <div class="rname">${r.name}</div>
+        <div class="rprice">$${Number(r.price).toFixed(2)}</div>
+        <div class="item-actions">
+          <button class="act-btn edit" onclick="editRepair('${r.id}')">✏️</button>
+          <button class="act-btn del"  onclick="deleteRepair('${r.id}')">🗑️</button>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── Select ──
+  function selectMake(id) {
+    selectedMakeId  = id;
+    selectedModelId = null;
+    const make = catalog.makes.find(m => m.id === id);
+    document.getElementById('selectedMakeLabel').textContent = make ? make.name : 'Select a make';
+    document.getElementById('addModelBtn').style.display = make ? '' : 'none';
+    document.getElementById('selectedModelLabel').textContent = 'Select a model';
+    document.getElementById('addRepairBtn').style.display = 'none';
+    renderMakes();
+    renderModels();
+    renderRepairs();
+  }
+
+  function selectModel(id) {
+    selectedModelId = id;
+    const make  = catalog.makes.find(m => m.id === selectedMakeId);
+    const model = make && make.models.find(m => m.id === id);
+    document.getElementById('selectedModelLabel').textContent = model ? model.name : 'Select a model';
+    document.getElementById('addRepairBtn').style.display = model ? '' : 'none';
+    renderModels();
+    renderRepairs();
+  }
+
+  // ── Modal ──
+  let modalCallback = null;
+
+  function openModal(title, bodyHtml, onSave) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').innerHTML = bodyHtml;
+    modalCallback = onSave;
+    document.getElementById('modalBackdrop').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modalBackdrop').classList.remove('open');
+    modalCallback = null;
+  }
+
+  document.getElementById('modalCancel').addEventListener('click', closeModal);
+  document.getElementById('modalBackdrop').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+  document.getElementById('modalSave').addEventListener('click', () => { if (modalCallback) modalCallback(); });
+
+  // ── Image upload helper ──
+  function imageUploadHtml(inputId, previewId, currentImg) {
+    return `
+      <div class="upload-row">
+        <label class="upload-label" for="${inputId}">📷 Upload Image</label>
+        <input type="file" id="${inputId}" accept="image/*" onchange="handleUpload('${inputId}','${previewId}')">
+        <img id="${previewId}" class="img-preview ${currentImg ? 'show' : ''}" src="${currentImg || ''}" alt="preview">
+      </div>
+      <input type="hidden" id="${inputId}_path" value="${currentImg || ''}">`;
+  }
+
+  async function handleUpload(inputId, previewId) {
+    const file = document.getElementById(inputId).files[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('image', file);
+    try {
+      const r = await fetch('/api/upload', { method: 'POST', body: fd });
+      const d = await r.json();
+      if (d.imagePath) {
+        document.getElementById(inputId + '_path').value = d.imagePath;
+        const prev = document.getElementById(previewId);
+        prev.src = d.imagePath;
+        prev.classList.add('show');
+      }
+    } catch (e) { showToast('Upload failed'); }
+  }
+
+  // ── Makes CRUD ──
+  document.getElementById('addMakeBtn').addEventListener('click', () => {
+    openModal('Add Phone Make', `
+      <div class="mfield"><label>Make Name</label><input type="text" id="mName" placeholder="e.g. Samsung"></div>
+      <div class="mfield"><label>Image</label>${imageUploadHtml('mImg', 'mImgPrev', '')}</div>
+    `, () => {
+      const name = document.getElementById('mName').value.trim();
+      if (!name) { showToast('Enter a name'); return; }
+      catalog.makes.push({ id: uid(), name, image: document.getElementById('mImg_path').value, models: [] });
+      dirty = true; closeModal(); renderMakes();
+    });
+  });
+
+  function editMake(id) {
+    const make = catalog.makes.find(m => m.id === id);
+    if (!make) return;
+    openModal('Edit Make', `
+      <div class="mfield"><label>Make Name</label><input type="text" id="mName" value="${make.name}"></div>
+      <div class="mfield"><label>Image</label>${imageUploadHtml('mImg', 'mImgPrev', make.image)}</div>
+    `, () => {
+      const name = document.getElementById('mName').value.trim();
+      if (!name) { showToast('Enter a name'); return; }
+      make.name  = name;
+      make.image = document.getElementById('mImg_path').value || make.image;
+      dirty = true; closeModal();
+      if (selectedMakeId === id) document.getElementById('selectedMakeLabel').textContent = name;
+      renderMakes(); renderModels();
+    });
+  }
+
+  function deleteMake(id) {
+    if (!confirm('Delete this make and all its models and repairs?')) return;
+    catalog.makes = catalog.makes.filter(m => m.id !== id);
+    if (selectedMakeId === id) { selectedMakeId = null; selectedModelId = null; }
+    dirty = true; renderMakes(); renderModels(); renderRepairs();
+  }
+
+  // ── Models CRUD ──
+  document.getElementById('addModelBtn').addEventListener('click', () => {
+    openModal('Add Model', `
+      <div class="mfield"><label>Model Name</label><input type="text" id="modName" placeholder="e.g. Galaxy A14"></div>
+      <div class="mfield"><label>Image</label>${imageUploadHtml('modImg', 'modImgPrev', '')}</div>
+    `, () => {
+      const make = catalog.makes.find(m => m.id === selectedMakeId);
+      if (!make) return;
+      const name = document.getElementById('modName').value.trim();
+      if (!name) { showToast('Enter a name'); return; }
+      make.models.push({ id: uid(), name, image: document.getElementById('modImg_path').value, repairs: [] });
+      dirty = true; closeModal(); renderMakes(); renderModels();
+    });
+  });
+
+  function editModel(id) {
+    const make  = catalog.makes.find(m => m.id === selectedMakeId);
+    const model = make && make.models.find(m => m.id === id);
+    if (!model) return;
+    openModal('Edit Model', `
+      <div class="mfield"><label>Model Name</label><input type="text" id="modName" value="${model.name}"></div>
+      <div class="mfield"><label>Image</label>${imageUploadHtml('modImg', 'modImgPrev', model.image)}</div>
+    `, () => {
+      const name = document.getElementById('modName').value.trim();
+      if (!name) { showToast('Enter a name'); return; }
+      model.name  = name;
+      model.image = document.getElementById('modImg_path').value || model.image;
+      dirty = true; closeModal();
+      if (selectedModelId === id) document.getElementById('selectedModelLabel').textContent = name;
+      renderMakes(); renderModels();
+    });
+  }
+
+  function deleteModel(id) {
+    if (!confirm('Delete this model and all its repairs?')) return;
+    const make = catalog.makes.find(m => m.id === selectedMakeId);
+    if (!make) return;
+    make.models = make.models.filter(m => m.id !== id);
+    if (selectedModelId === id) selectedModelId = null;
+    dirty = true; renderMakes(); renderModels(); renderRepairs();
+  }
+
+  // ── Repairs CRUD ──
+  document.getElementById('addRepairBtn').addEventListener('click', () => {
+    openModal('Add Repair', `
+      <div class="mfield"><label>Repair Name</label><input type="text" id="rName" placeholder="e.g. Screen Replacement"></div>
+      <div class="mfield"><label>Price ($)</label><input type="number" id="rPrice" min="0" step="0.01" placeholder="0.00"></div>
+    `, () => {
+      const make  = catalog.makes.find(m => m.id === selectedMakeId);
+      const model = make && make.models.find(m => m.id === selectedModelId);
+      if (!model) return;
+      const name  = document.getElementById('rName').value.trim();
+      const price = parseFloat(document.getElementById('rPrice').value);
+      if (!name || isNaN(price)) { showToast('Enter name and price'); return; }
+      model.repairs.push({ id: uid(), name, price });
+      dirty = true; closeModal(); renderMakes(); renderModels(); renderRepairs();
+    });
+  });
+
+  function editRepair(id) {
+    const make  = catalog.makes.find(m => m.id === selectedMakeId);
+    const model = make && make.models.find(m => m.id === selectedModelId);
+    const rep   = model && model.repairs.find(r => r.id === id);
+    if (!rep) return;
+    openModal('Edit Repair', `
+      <div class="mfield"><label>Repair Name</label><input type="text" id="rName" value="${rep.name}"></div>
+      <div class="mfield"><label>Price ($)</label><input type="number" id="rPrice" min="0" step="0.01" value="${rep.price}"></div>
+    `, () => {
+      const name  = document.getElementById('rName').value.trim();
+      const price = parseFloat(document.getElementById('rPrice').value);
+      if (!name || isNaN(price)) { showToast('Enter name and price'); return; }
+      rep.name  = name;
+      rep.price = price;
+      dirty = true; closeModal(); renderRepairs();
+    });
+  }
+
+  function deleteRepair(id) {
+    if (!confirm('Delete this repair?')) return;
+    const make  = catalog.makes.find(m => m.id === selectedMakeId);
+    const model = make && make.models.find(m => m.id === selectedModelId);
+    if (!model) return;
+    model.repairs = model.repairs.filter(r => r.id !== id);
+    dirty = true; renderMakes(); renderModels(); renderRepairs();
+  }
+
+  // ── Save ──
+  document.getElementById('saveBtn').addEventListener('click', saveCatalog);
+  window.addEventListener('beforeunload', e => { if (dirty) e.returnValue = ''; });
+
+  // ── Toast ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  loadCatalog();
+</script>
+</body>
+</html>
